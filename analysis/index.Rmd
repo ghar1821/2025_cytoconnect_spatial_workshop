@@ -30,3 +30,23 @@ https://doi.org/10.1038/s41588-025-02193-3
 | [setup](setup.html)                             | Downloading data and packages|
 
 Please run codes in the Rmd file before coming to the workshop.
+
+## Visium
+
+| Rmd file                                        | Topics                          |
+|:---------                                       |:--------------------------------|
+| [visium_01](visium_01.html) ~ 10 mins           | Introduction to data            |   
+|                                                 | Loading data into Seurat object |
+|                                                 | Interacting with Seurat object  |
+|                                                 |                                 |
+| [visium_02](visium_02.html) ~ 10 mins           | QC and Normalisation            | 
+|                                                 |                                 |
+| [visium_03](visium_03.html) ~ 15 mins           | Visualising spatial data        |
+|                                                 |                                 |
+| [visium_04](visium_04.html) ~ 20 mins           | Module score                    |
+|                                                 | Deconvolution                   |
+|                                                 | Find Spatially Variable genes   |
+|                                                 | Other spatial based analyses    |
+|                                                 |                                 |
+| NA ~ 60 mins                                    | Practice time                   |
+| NA ~ 30 mins                                    | Open discussion                 |
