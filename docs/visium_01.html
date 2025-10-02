@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Givanna Putri, Thomas O’neil" />
+
+
+<title>Visium part 1</title>
+
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">2025_cytoconnect_spatial_workshop</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Visium part 1</h1>
+<h4 class="author">Givanna Putri, Thomas O’neil</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2025-10-02
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong>
+<code>2025_cytoconnect_spatial_workshop/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.2). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20251002code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20251002)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20251002code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20251002)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrong383f3f1">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong> 383f3f1
+</a>
+</p>
+</div>
+<div id="strongRepositoryversionstrong383f3f1"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version 383f3f1.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .DS_Store
+
+Untracked files:
+    Untracked:  data/sc_seurat_object_10x.qs
+    Untracked:  data/visium/
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/visium_01.Rmd</code>) and HTML
+(<code>docs/visium_01.html</code>) files. If you’ve configured a remote
+Git repository (see <code>?wflow_git_remote</code>), click on the
+hyperlinks in the table below to view the files as they were in that
+past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+383f3f1
+</td>
+<td>
+Givanna Putri
+</td>
+<td>
+2025-10-02
+</td>
+<td>
+First publish for website
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>In this part of the visium workshop, we will introduce the dataset we
+will be using in the visium workshop, learn how to load it up into a
+Seurat object and interrogate it.</p>
+</div>
+<div id="load-libraries" class="section level2">
+<h2>Load libraries</h2>
+<pre class="r"><code>library(Seurat)
+library(qs2)</code></pre>
+</div>
+<div id="the-dataset" class="section level2">
+<h2>The dataset</h2>
+<p>The data used for this tutorial is an FFPE tissue from a patient with
+colorectal cancer. It is described in a bioRxiv paper: <a
+href="https://doi.org/10.1101/2024.06.04.597233"
+class="uri">https://doi.org/10.1101/2024.06.04.597233</a></p>
+<p>The data can be downloaded from <a
+href="https://www.10xgenomics.com/products/visium-hd-spatial-gene-expression/dataset-human-crc">here</a>.
+Choose Visium CytAssist v2 Sample P2 CRC on the tab on the left.</p>
+</div>
+<div id="obtaining-the-spot-x-gene-matrix" class="section level2">
+<h2>Obtaining the spot x gene matrix</h2>
+<p>To get a spot x gene matrix, one typically have to process the raw
+data using the <a
+href="https://www.10xgenomics.com/support/software/space-ranger/latest">Spaceranger</a>
+software from 10x. Depending on your experiment, running Spaceranger can
+be very complex. It is beyond the scope of this workshop.</p>
+<p>If you are keen to try running Spaceranger, here is a bash script you
+can use for this dataset:</p>
+<pre class="bash"><code>#!/bin/bash
+
+# make sure you specify which folder is datdir and refdir
+spaceranger count \
+    --id=&quot;Visium_FFPE_p2_crc&quot; \
+    --transcriptome=$refdir \
+    --probe-set=$datadir/Visium_V2_Human_Colon_Cancer_P2_probe_set.csv \
+    --fastqs=$datadir/Visium_V2_Human_Colon_Cancer_P2_fastqs \
+    --cytaimage=$datadir/Visium_V2_Human_Colon_Cancer_P2_image.tif \
+    --image=$datadir/Visium_V2_Human_Colon_Cancer_P2_tissue_image.btf \
+    --slide=V53A10-078 \
+    --area=B1\
+    --loupe-alignment=$datadir/Visium_V2_Human_Colon_Cancer_P2_alignment_file.json \
+    --localcores=20 \
+    --localmem=60 \
+    --create-bam=true
+</code></pre>
+<p>Before running spaceranger, make sure you download all the input
+files use in the code block above from <a
+href="https://www.10xgenomics.com/products/visium-hd-spatial-gene-expression/dataset-human-crc">here</a>
+- (choose Visium CytAssist v2 Sample P2 CRC), as well as the relevant
+pre-built reference genome <a
+href="https://www.10xgenomics.com/support/software/cell-ranger/downloads#reference-downloads">here</a>.</p>
+<p>Spaceranger is quite resource hungry. So make sure you run it in a
+computer with a sizeable amount of resources available or preferably on
+a High Performance Computing platform.</p>
+<p>After running Spaceranger, you will get a lot of folders and files.
+The ones that you need to create a Seurat object are located in the
+<code>outs</code> folder. It will contain the following files and
+folders:</p>
+<pre class="bash"><code>tree outs/
+
+outs/
+├── analysis/
+│   ├── clustering/
+│   ├── diffexp/
+│   ├── pca/
+│   ├── tsne/
+│   └── umap/
+├── cloupe.cloupe
+├── deconvolution/
+├── filtered_feature_bc_matrix/
+│   ├── barcodes.tsv.gz
+│   ├── features.tsv.gz
+│   └── matrix.mtx.gz
+├── filtered_feature_bc_matrix.h5
+├── metrics_summary.csv
+├── molecule_info.h5
+├── possorted_genome_bam.bam
+├── possorted_genome_bam.bam.bai
+├── probe_set.csv
+├── raw_feature_bc_matrix/
+│   ├── barcodes.tsv.gz
+│   ├── features.tsv.gz
+│   └── matrix.mtx.gz
+├── raw_feature_bc_matrix.h5
+├── raw_probe_bc_matrix.h5
+├── spatial/
+│   ├── aligned_fiducials.jpg
+│   ├── aligned_tissue_image.jpg
+│   ├── cytassist_image.tiff
+│   ├── detected_tissue_image.jpg
+│   ├── scalefactors_json.json
+│   ├── spatial_enrichment.csv
+│   ├── tissue_hires_image.png
+│   ├── tissue_lowres_image.png
+│   └── tissue_positions.csv
+└── web_summary.html
+</code></pre>
+<p>Brief description of the most frequently used files, some of which,
+we will be using in this workshop:</p>
+<ul>
+<li><code>web_summary.html</code>: Spaceranger run summary metrics and
+plots. This file will give you some information about the samples, e.g.,
+how many reads were detected and successfully mapped to the reference
+genome, etc.</li>
+<li><code>cloupe.cloupe</code>: Loupe Browser visualization and analysis
+file to load into <a
+href="https://www.10xgenomics.com/support/software/loupe-browser/latest">10x
+Loupe Browser software</a>. Spaceranger will run few cookie cutter
+analysis on your data. You can view the output by loading this file into
+the Loupe Browser.</li>
+<li><code>spatial/</code>: A folder containing outputs that capture the
+spatial information of your sample. Packages such as Seurat is likely to
+require files in this folder to work properly.</li>
+<li><code>filtered_feature_bc_matrix (folder or the h5 file)</code>:
+<em>Filtered</em> matrix containing the number of UMIs associated with a
+gene (row) and a spot barcode (column). The matrix is filtered as it
+only includes spots associated with the tissue. These information are
+provided as either a combination of mtx file (for the matrix) and tsv
+files (for information on the features and barcodes) stored in a folder,
+or as one HDF5 file (the h5 file). Either can be used as an input to
+packages such as Seurat for downstream analyses.</li>
+<li><code>raw_feature_bc_matrices (folder or the h5 file)</code>: Same
+information provided in filtered_feature_bc_matrix but
+<em>unfiltered</em>, i.e. keeping all the barcodes, including those that
+may not be associated with the tissue. This matrix is a lot larger than
+the one in filtered_feature_bc_matrix.</li>
+</ul>
+<p>Full description of the generated files and folders are available <a
+href="https://www.10xgenomics.com/support/software/space-ranger/latest/analysis/outputs/output-overview">here</a>.</p>
+</div>
+<div id="loading-data-into-seurat-object" class="section level2">
+<h2>Loading data into Seurat Object</h2>
+<p>To do this, we will need the H5 file and the spatial folder that came
+from SpaceRanger. <em>There is no need to purposely run SpaceRanger to
+get these files. 10x kindly provided them on their website: <a
+href="https://www.10xgenomics.com/products/visium-hd-spatial-gene-expression/dataset-human-crc"
+class="uri">https://www.10xgenomics.com/products/visium-hd-spatial-gene-expression/dataset-human-crc</a>
+(choose Visium CytAssist v2 Sample P2 CRC).</em></p>
+<p>The spatial folder is required for Seurat to find the following extra
+information:</p>
+<ul>
+<li><code>tissue_lowres_image.png</code>: the image of the slide in low
+resolution.</li>
+<li><code>scalefactors_json.json</code>: the scale factors to convert
+the high-resolution coordinates and the scaled-down coordinates.</li>
+<li><code>tissue_positions_list.csv</code>: coordinates for each
+spot</li>
+</ul>
+<p>We can use the code block below to import the data into a Seurat
+object. However, before doing so, you most likely have the change the
+<code>data.dir</code> parameter to point to the directory where you
+store the H5 file and the spatial folder. In this example, they are
+stored in a “data” folder of our current working directory.</p>
+<pre class="r"><code>dat &lt;- Load10X_Spatial(
+  data.dir = file.path(here::here(), &quot;data&quot;, &quot;visium&quot;, &quot;raw&quot;),
+  filename = &#39;Visium_V2_Human_Colon_Cancer_P2_filtered_feature_bc_matrix.h5&#39;
+)</code></pre>
+</div>
+<div id="inspecting-seurat-object" class="section level2">
+<h2>Inspecting Seurat object</h2>
+<p>We can inspect the object to see the number of spots and genes there
+are in the dataset.</p>
+<pre class="r"><code># 4,269 spots - samples in the seurat object description
+# 18,085 genes.
+dat</code></pre>
+<pre><code>An object of class Seurat 
+18085 features across 4269 samples within 1 assay 
+Active assay: Spatial (18085 features, 0 variable features)
+ 1 layer present: counts
+ 1 spatial field of view present: slice1</code></pre>
+<p>A Seurat object can contain multiple Assays to store data from
+different omics technologies in one object. Since we have only loaded a
+visium data, we only have one assay called “Spatial”. You can only have
+one assay “active” at a time. To change the active assay you can run the
+following code block - with “Spatial” being the name of the assay to
+activate:</p>
+<pre class="r"><code>DefaultAssay(dat) &lt;- &quot;Spatial&quot;</code></pre>
+<p>Within an assay, we can have multiple Layers, each containing one
+spot by gene matrix. The idea is we can perform some transformations or
+apply some functions to the matrix in a layer and store it in another
+layer. This benefit will be a lot clearer as we progress through the
+workshop.</p>
+<p>By default, when we run <code>Load10x_Spatial</code>, Seurat will
+store the spot by gene matrix in the <code>Spatial</code> assay under
+the <code>counts</code> layer. You can change this assay name by
+specifying a different name for the <code>assay</code> parameter when
+running the <code>Load10x_Spatial</code> function.</p>
+<p>We can retrieve the spot by gene matrix like so:</p>
+<pre class="r"><code># showing only 20 genes for 5 spots
+head(dat[[&quot;Spatial&quot;]]$counts, c(20, 5))</code></pre>
+<pre><code>20 x 5 sparse Matrix of class &quot;dgCMatrix&quot;
+         AACAATGTGCTCCGAG-1 AACACCATTCGCATAC-1 AACACGACAACGGAGT-1
+SAMD11                    1                  1                  .
+NOC2L                     4                  .                 12
+KLHL17                    .                  .                  1
+PLEKHN1                   2                  .                 11
+PERM1                     .                  .                  .
+HES4                      2                  1                  3
+ISG15                    10                  3                 18
+AGRN                      6                  .                 25
+RNF223                    .                  .                  1
+C1orf159                  3                  .                  1
+TTLL10                    1                  .                  .
+TNFRSF18                  1                  .                  2
+TNFRSF4                   .                  .                  1
+SDF4                     29                  3                 45
+B3GALT6                   6                  .                 12
+C1QTNF12                  1                  .                  .
+UBE2J2                    6                  2                 14
+SCNN1D                    .                  .                  .
+ACAP3                    14                  1                  8
+PUSL1                     3                  .                  4
+         AACACGCAGATAACAA-1 AACACGTTGATACCGC-1
+SAMD11                    .                  .
+NOC2L                     .                  .
+KLHL17                    1                  1
+PLEKHN1                   .                  2
+PERM1                     .                  1
+HES4                      .                  .
+ISG15                     .                  1
+AGRN                      .                  .
+RNF223                    .                  .
+C1orf159                  .                  .
+TTLL10                    .                  .
+TNFRSF18                  .                  1
+TNFRSF4                   .                  2
+SDF4                      5                  7
+B3GALT6                   .                  2
+C1QTNF12                  .                  .
+UBE2J2                    1                  2
+SCNN1D                    .                  1
+ACAP3                     .                  5
+PUSL1                     1                  .</code></pre>
+<p>By default, genes (features) are stored as rows and spots are stored
+as columns.</p>
+<div id="gene-and-spot-metadata" class="section level3">
+<h3>Gene and spot metadata</h3>
+<p>We can retrieve the name of the genes we have loaded in like so:</p>
+<pre class="r"><code># only showing 20 genes. Remove the head function to show everything.
+head(rownames(dat), 20)</code></pre>
+<pre><code> [1] &quot;SAMD11&quot;   &quot;NOC2L&quot;    &quot;KLHL17&quot;   &quot;PLEKHN1&quot;  &quot;PERM1&quot;    &quot;HES4&quot;    
+ [7] &quot;ISG15&quot;    &quot;AGRN&quot;     &quot;RNF223&quot;   &quot;C1orf159&quot; &quot;TTLL10&quot;   &quot;TNFRSF18&quot;
+[13] &quot;TNFRSF4&quot;  &quot;SDF4&quot;     &quot;B3GALT6&quot;  &quot;C1QTNF12&quot; &quot;UBE2J2&quot;   &quot;SCNN1D&quot;  
+[19] &quot;ACAP3&quot;    &quot;PUSL1&quot;   </code></pre>
+<pre class="r"><code># only showing 20 genes. Remove the head function to show everything.
+head(Features(dat), 20)</code></pre>
+<pre><code> [1] &quot;SAMD11&quot;   &quot;NOC2L&quot;    &quot;KLHL17&quot;   &quot;PLEKHN1&quot;  &quot;PERM1&quot;    &quot;HES4&quot;    
+ [7] &quot;ISG15&quot;    &quot;AGRN&quot;     &quot;RNF223&quot;   &quot;C1orf159&quot; &quot;TTLL10&quot;   &quot;TNFRSF18&quot;
+[13] &quot;TNFRSF4&quot;  &quot;SDF4&quot;     &quot;B3GALT6&quot;  &quot;C1QTNF12&quot; &quot;UBE2J2&quot;   &quot;SCNN1D&quot;  
+[19] &quot;ACAP3&quot;    &quot;PUSL1&quot;   </code></pre>
+<p>And the unique name assigned to each spot like so:</p>
+<pre class="r"><code># only showing 20 spots Remove the head function to show everything.
+head(colnames(dat), 20)</code></pre>
+<pre><code> [1] &quot;AACAATGTGCTCCGAG-1&quot; &quot;AACACCATTCGCATAC-1&quot; &quot;AACACGACAACGGAGT-1&quot;
+ [4] &quot;AACACGCAGATAACAA-1&quot; &quot;AACACGTTGATACCGC-1&quot; &quot;AACACTCGTGAGCTTC-1&quot;
+ [7] &quot;AACAGCCTCCTGACTA-1&quot; &quot;AACAGGAATTCTGTGA-1&quot; &quot;AACAGGCCAGGCCGCT-1&quot;
+[10] &quot;AACAGGCCATTGTCAC-1&quot; &quot;AACAGTCGAGGTAGAT-1&quot; &quot;AACAGTCTGACGAATT-1&quot;
+[13] &quot;AACATACTCCAGCTGA-1&quot; &quot;AACATAGAAGACTGTT-1&quot; &quot;AACATAGAAGGTGAGT-1&quot;
+[16] &quot;AACATAGAAGTGCGCA-1&quot; &quot;AACATAGGAGGCGTCC-1&quot; &quot;AACATAGGTCCATAGC-1&quot;
+[19] &quot;AACATAGGTTCCGCAC-1&quot; &quot;AACATAGGTTGGCACC-1&quot;</code></pre>
+<pre class="r"><code># only showing 20 spots Remove the head function to show everything.
+head(Cells(dat), 20)</code></pre>
+<pre><code> [1] &quot;AACAATGTGCTCCGAG-1&quot; &quot;AACACCATTCGCATAC-1&quot; &quot;AACACGACAACGGAGT-1&quot;
+ [4] &quot;AACACGCAGATAACAA-1&quot; &quot;AACACGTTGATACCGC-1&quot; &quot;AACACTCGTGAGCTTC-1&quot;
+ [7] &quot;AACAGCCTCCTGACTA-1&quot; &quot;AACAGGAATTCTGTGA-1&quot; &quot;AACAGGCCAGGCCGCT-1&quot;
+[10] &quot;AACAGGCCATTGTCAC-1&quot; &quot;AACAGTCGAGGTAGAT-1&quot; &quot;AACAGTCTGACGAATT-1&quot;
+[13] &quot;AACATACTCCAGCTGA-1&quot; &quot;AACATAGAAGACTGTT-1&quot; &quot;AACATAGAAGGTGAGT-1&quot;
+[16] &quot;AACATAGAAGTGCGCA-1&quot; &quot;AACATAGGAGGCGTCC-1&quot; &quot;AACATAGGTCCATAGC-1&quot;
+[19] &quot;AACATAGGTTCCGCAC-1&quot; &quot;AACATAGGTTGGCACC-1&quot;</code></pre>
+<p>We can also query the seurat object as if it is a table by using base
+R functions like <code>ncol</code>, <code>nrow</code>, and
+<code>dim</code>:</p>
+<pre class="r"><code># how many spots
+ncol(dat)</code></pre>
+<pre><code>[1] 4269</code></pre>
+<pre class="r"><code># how many genes
+nrow(dat)</code></pre>
+<pre><code>[1] 18085</code></pre>
+<pre class="r"><code># how many genes and spots (rows and cols respectively)
+dim(dat)</code></pre>
+<pre><code>[1] 18085  4269</code></pre>
+</div>
+<div id="metadata" class="section level3">
+<h3>Metadata</h3>
+<p>Metadata for the spots can be retrieved like so:</p>
+<pre class="r"><code># only showing 20 rows. Remove the head function to show everything.
+head(dat[[]], 20)</code></pre>
+<pre><code>                      orig.ident nCount_Spatial nFeature_Spatial
+AACAATGTGCTCCGAG-1 SeuratProject         159480            12673
+AACACCATTCGCATAC-1 SeuratProject           5719             3393
+AACACGACAACGGAGT-1 SeuratProject         244735            13370
+AACACGCAGATAACAA-1 SeuratProject          12387             6003
+AACACGTTGATACCGC-1 SeuratProject          58894            11198
+AACACTCGTGAGCTTC-1 SeuratProject          55548            10947
+AACAGCCTCCTGACTA-1 SeuratProject         270292            13726
+AACAGGAATTCTGTGA-1 SeuratProject          14250             5628
+AACAGGCCAGGCCGCT-1 SeuratProject         146950            13120
+AACAGGCCATTGTCAC-1 SeuratProject         120019            12746
+AACAGTCGAGGTAGAT-1 SeuratProject         200220            13057
+AACAGTCTGACGAATT-1 SeuratProject         136015            12656
+AACATACTCCAGCTGA-1 SeuratProject          65435            12270
+AACATAGAAGACTGTT-1 SeuratProject         200960            12695
+AACATAGAAGGTGAGT-1 SeuratProject           8817             4874
+AACATAGAAGTGCGCA-1 SeuratProject         233746            13541
+AACATAGGAGGCGTCC-1 SeuratProject          54057            11153
+AACATAGGTCCATAGC-1 SeuratProject         117304            12415
+AACATAGGTTCCGCAC-1 SeuratProject          11350             5506
+AACATAGGTTGGCACC-1 SeuratProject         146714            12390</code></pre>
+<p>Here, each row is a spot. <code>nCount_Spatial</code> shows the total
+number of transcripts (specifically total number of unique UMIs) in a
+spot. <code>nFeature_Spatial</code> shows how many unique genes are
+expressed per spot. <code>orig.ident</code> refers to the “original
+identity” of the sample. These information are all pre-filled and
+computed by the <code>Load10x_Spatial</code>function.</p>
+<p>The metadata in Seurat object is actually stored as a data.frame.
+Thus, if you know the column you want to inspect, you can interact with
+it as if it is a data.frame, like so</p>
+<pre class="r"><code># only showing 20 rows. Remove the head function to show everything.
+head(dat$nCount_Spatial, 20)</code></pre>
+<pre><code>AACAATGTGCTCCGAG-1 AACACCATTCGCATAC-1 AACACGACAACGGAGT-1 AACACGCAGATAACAA-1 
+            159480               5719             244735              12387 
+AACACGTTGATACCGC-1 AACACTCGTGAGCTTC-1 AACAGCCTCCTGACTA-1 AACAGGAATTCTGTGA-1 
+             58894              55548             270292              14250 
+AACAGGCCAGGCCGCT-1 AACAGGCCATTGTCAC-1 AACAGTCGAGGTAGAT-1 AACAGTCTGACGAATT-1 
+            146950             120019             200220             136015 
+AACATACTCCAGCTGA-1 AACATAGAAGACTGTT-1 AACATAGAAGGTGAGT-1 AACATAGAAGTGCGCA-1 
+             65435             200960               8817             233746 
+AACATAGGAGGCGTCC-1 AACATAGGTCCATAGC-1 AACATAGGTTCCGCAC-1 AACATAGGTTGGCACC-1 
+             54057             117304              11350             146714 </code></pre>
+<p>We can also add more metadata to it using data.frame notation. For
+example, we can add a separate column identifying the patient the data
+originates from:</p>
+<pre class="r"><code>dat$patient_id &lt;- &quot;P2&quot;
+# only showing 20 rows. Remove the head function to show everything.
+head(dat[[]], 20)</code></pre>
+<pre><code>                      orig.ident nCount_Spatial nFeature_Spatial patient_id
+AACAATGTGCTCCGAG-1 SeuratProject         159480            12673         P2
+AACACCATTCGCATAC-1 SeuratProject           5719             3393         P2
+AACACGACAACGGAGT-1 SeuratProject         244735            13370         P2
+AACACGCAGATAACAA-1 SeuratProject          12387             6003         P2
+AACACGTTGATACCGC-1 SeuratProject          58894            11198         P2
+AACACTCGTGAGCTTC-1 SeuratProject          55548            10947         P2
+AACAGCCTCCTGACTA-1 SeuratProject         270292            13726         P2
+AACAGGAATTCTGTGA-1 SeuratProject          14250             5628         P2
+AACAGGCCAGGCCGCT-1 SeuratProject         146950            13120         P2
+AACAGGCCATTGTCAC-1 SeuratProject         120019            12746         P2
+AACAGTCGAGGTAGAT-1 SeuratProject         200220            13057         P2
+AACAGTCTGACGAATT-1 SeuratProject         136015            12656         P2
+AACATACTCCAGCTGA-1 SeuratProject          65435            12270         P2
+AACATAGAAGACTGTT-1 SeuratProject         200960            12695         P2
+AACATAGAAGGTGAGT-1 SeuratProject           8817             4874         P2
+AACATAGAAGTGCGCA-1 SeuratProject         233746            13541         P2
+AACATAGGAGGCGTCC-1 SeuratProject          54057            11153         P2
+AACATAGGTCCATAGC-1 SeuratProject         117304            12415         P2
+AACATAGGTTCCGCAC-1 SeuratProject          11350             5506         P2
+AACATAGGTTGGCACC-1 SeuratProject         146714            12390         P2</code></pre>
+<p>To access the metadata associated with the genes, we can use similar
+notation but also include which assay we want to retrieve the metadata
+from.</p>
+<pre class="r"><code>dat[[&#39;Spatial&#39;]][[]]</code></pre>
+<pre><code>data frame with 0 columns and 18085 rows</code></pre>
+<p>Currently, we have nothing in it. So do not be alarmed.</p>
+<p>Let’s save the object now so we can use it in the subsequent
+sections. We can either save it as an RDS object using
+<code>saveRDS(dat, "output/visium/filtered_seurat.qs")</code> or as a QS
+object using the <a
+href="https://cran.r-project.org/web/packages/qs2/vignettes/vignette.html">qs2
+package</a>. The latter is a lot quicker.</p>
+<pre class="r"><code>qs_save(dat, file.path(here::here(), &quot;data&quot;, &quot;visium&quot;, &quot;data&quot;, &quot;visium_seurat.qs2&quot;))</code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.5.1 (2025-06-13)
+Platform: aarch64-apple-darwin20
+Running under: macOS Sequoia 15.5
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: Australia/Melbourne
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] qs2_0.1.5          Seurat_5.3.0       SeuratObject_5.1.0 sp_2.2-0          
+[5] workflowr_1.7.2   
+
+loaded via a namespace (and not attached):
+  [1] RColorBrewer_1.1-3     rstudioapi_0.17.1      jsonlite_2.0.0        
+  [4] magrittr_2.0.4         spatstat.utils_3.1-5   farver_2.1.2          
+  [7] rmarkdown_2.29         fs_1.6.6               vctrs_0.6.5           
+ [10] ROCR_1.0-11            spatstat.explore_3.5-2 htmltools_0.5.8.1     
+ [13] sass_0.4.10            sctransform_0.4.2      parallelly_1.45.1     
+ [16] KernSmooth_2.23-26     bslib_0.9.0            htmlwidgets_1.6.4     
+ [19] ica_1.0-3              plyr_1.8.9             plotly_4.11.0         
+ [22] zoo_1.8-14             cachem_1.1.0           whisker_0.4.1         
+ [25] igraph_2.1.4           mime_0.13              lifecycle_1.0.4       
+ [28] pkgconfig_2.0.3        Matrix_1.7-3           R6_2.6.1              
+ [31] fastmap_1.2.0          fitdistrplus_1.2-4     future_1.67.0         
+ [34] shiny_1.11.1           digest_0.6.37          colorspace_2.1-1      
+ [37] patchwork_1.3.2        ps_1.9.1               rprojroot_2.1.1       
+ [40] tensor_1.5.1           RSpectra_0.16-2        irlba_2.3.5.1         
+ [43] progressr_0.15.1       spatstat.sparse_3.1-0  httr_1.4.7            
+ [46] polyclip_1.10-7        abind_1.4-8            compiler_4.5.1        
+ [49] here_1.0.2             bit64_4.6.0-1          S7_0.2.0              
+ [52] fastDummies_1.7.5      MASS_7.3-65            tools_4.5.1           
+ [55] lmtest_0.9-40          httpuv_1.6.16          future.apply_1.20.0   
+ [58] goftest_1.2-3          glue_1.8.0             callr_3.7.6           
+ [61] nlme_3.1-168           promises_1.3.3         grid_4.5.1            
+ [64] Rtsne_0.17             getPass_0.2-4          cluster_2.1.8.1       
+ [67] reshape2_1.4.4         generics_0.1.4         hdf5r_1.3.12          
+ [70] gtable_0.3.6           spatstat.data_3.1-6    tidyr_1.3.1           
+ [73] data.table_1.17.8      stringfish_0.17.0      spatstat.geom_3.5-0   
+ [76] RcppAnnoy_0.0.22       ggrepel_0.9.6          RANN_2.6.2            
+ [79] pillar_1.11.0          stringr_1.5.2          spam_2.11-1           
+ [82] RcppHNSW_0.6.0         later_1.4.4            splines_4.5.1         
+ [85] dplyr_1.1.4            lattice_0.22-7         bit_4.6.0             
+ [88] survival_3.8-3         deldir_2.0-4           tidyselect_1.2.1      
+ [91] miniUI_0.1.2           pbapply_1.7-4          knitr_1.50            
+ [94] git2r_0.36.2           gridExtra_2.3          scattermore_1.2       
+ [97] xfun_0.53              matrixStats_1.5.0      stringi_1.8.7         
+[100] lazyeval_0.2.2         yaml_2.3.10            evaluate_1.0.5        
+[103] codetools_0.2-20       tibble_3.3.0           cli_3.6.5             
+[106] uwot_0.2.3             RcppParallel_5.1.10    xtable_1.8-4          
+[109] reticulate_1.43.0      processx_3.8.6         jquerylib_0.1.4       
+[112] dichromat_2.0-0.1      Rcpp_1.1.0             globals_0.18.0        
+[115] spatstat.random_3.4-1  png_0.1-8              spatstat.univar_3.1-4 
+[118] parallel_4.5.1         ggplot2_4.0.0          dotCall64_1.2         
+[121] listenv_0.9.1          viridisLite_0.4.2      scales_1.4.0          
+[124] ggridges_0.5.6         purrr_1.1.0            rlang_1.1.6           
+[127] cowplot_1.2.0         </code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
