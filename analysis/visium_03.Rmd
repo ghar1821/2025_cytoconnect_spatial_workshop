@@ -1,0 +1,237 @@
+---
+title: "Visium part 3"
+author: "Givanna Putri, Thomas O'neil"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+In this part of the workshop, we will learn how to create some spatial plots using 
+Seurat and how to customise them.
+
+## Load packages and data
+
+```{r message=FALSE}
+library(Seurat)
+library(qs2)
+library(ggplot2)
+library(scales)
+```
+
+We will be using the Seurat object that we have QCed and normalised in [part 2](visium_02.html).
+
+```{r}
+dat <- qs_read(file.path(here::here(), "data", "visium", "data", "visium_seurat_qced_norm.qs2"))
+dat
+```
+
+## SpatialFeaturePlot
+
+SpatialFeaturePlot is a function in Seurat that allows you to plot a feature (e.g., 
+the expression of a gene) of the spots over the image of the tissue.
+
+For example, let's plot the expression of CD3D gene of our data.
+
+```{r}
+SpatialFeaturePlot(dat, features = "CD3D")
+```
+
+Often, the spots may look too small, like in this case.
+We can increase it by increasing the `pt.size.factor` parameter.
+
+```{r}
+# store it so we can use the same number later on
+pt_size <- 5
+SpatialFeaturePlot(dat, features = "CD3D", pt.size.factor = pt_size)
+```
+
+We can also adjust the opacity of the spots and the image underneath it by
+tuning the `alpha` and `image.alpha` parameter accordingly.
+The higher the number, the less opaque the spots and image will be.
+
+```{r}
+# Dimming the spots
+SpatialFeaturePlot(dat, features = "CD3D", pt.size.factor = pt_size, alpha = 0.3)
+
+# Dimming the image
+SpatialFeaturePlot(dat, features = "CD3D", pt.size.factor = pt_size, image.alpha = 0.5)
+
+# Completely removing the image
+SpatialFeaturePlot(dat, features = "CD3D", pt.size.factor = pt_size, image.alpha = 0)
+
+```
+
+If a range is passed onto the `alpha` parameter, it will alter the minimum and maximum opacity.
+This is handy if you want to accentuate the higher expression as we can lower
+the minimum opacity (which defaulted to 1) and increase the maximum opacity.
+
+```{r}
+SpatialFeaturePlot(dat, features = "CD3D", pt.size.factor = 5, 
+                   image.alpha = 0.5, alpha = c(0.5, 3))
+```
+
+In the plot above, each spot is coloured by the expression of CD3D gene.
+Notably, because the active assay of the data was set to SCT before we run `SpatialFeaturePlot`,
+the CD3D expression we plotted above is not the raw UMI count, but rather the count
+that has been normalised using SCTransformed, stored in the `data` layer.
+
+We can run the function on the raw unnormalised count by changing the default assay
+and setting the slot parametr to the `count` layer:
+
+```{r}
+DefaultAssay(dat) <- "Spatial"
+SpatialFeaturePlot(dat, features = "CD3D", pt.size.factor = pt_size, image.alpha = 0.5,
+                   slot = "count")
+```
+
+In one SpatialFeaturePlot call, we can visualise multiple features.
+E.g., let's visualise four genes, CD3D, CD3G, CD4, CD8A, :
+
+```{r}
+DefaultAssay(dat) <- "SCT"
+SpatialFeaturePlot(dat, pt.size.factor = 5, 
+                   image.alpha = 0.5, features = c("CD3D", "CD3G", "CD4", "CD8A"))
+```
+
+You can set how many columns do you want to spread the images across
+by specifying the parameter `ncol`.
+
+```{r}
+SpatialFeaturePlot(dat, pt.size.factor = 5, 
+                   image.alpha = 0.5, 
+                   features = c("CD3D", "CD3G", "CD4", "CD8A"), ncol = 4)
+```
+
+By default, the plot will focus on the the area of the tissue where the spots are.
+Disabling this by setting crop to FALSE will show the entire tissue.
+
+```{r}
+SpatialFeaturePlot(dat, features = "CD3D", crop=FALSE, image.alpha = 0.5, 
+                   pt.size.factor = 3)
+```
+
+## SpatialDimPlot
+
+SpatialDimPlot is different from SpatialFeaturePlot in that it allows us to
+visualise qualitative features.
+
+For example, let's visualise the spot by the patient ID metadata we added in
+[part 1](visium_01.html) before.
+
+```{r}
+SpatialDimPlot(dat, group.by = 'patient_id', pt.size.factor = pt_size,
+               image.alpha = 0.5)
+```
+
+There are some parameters that are shared between SpatialDimPlot and SpatialFeaturePlot,
+like `pt.size.factor`, `image.alpha`, `alpha`
+
+We can override the spot colour by setting the `cols` parameter with
+a named vector mapping the discrete category in the data against the colour.
+To visualise this, let's pretend we have 3 patients in our data.
+
+```{r}
+# pretend we have three patients in the data
+dat[[]]$pretend_patient_id <- c(
+  rep("Adam", 3000),
+  rep("Jane", 700),
+  rep("Clare", 259)
+)
+
+SpatialDimPlot(dat, group.by = 'pretend_patient_id', 
+               pt.size.factor = pt_size, image.alpha = 0.5,
+               cols = c("Adam" = "#0096FF", "Jane" = "orange", "Clare" = "#023020"))
+```
+
+We can also highlight only spots that belong to certain group and grey out the rest.
+E.g. let's discretise spots based on their CD3D expression
+
+```{r}
+SpatialDimPlot(dat, pt.size.factor = pt_size, image.alpha = 0.3,
+               cells.highlight =  list(
+                 "CD3pos" = WhichCells(dat, expression = CD3D > 2),
+                 "CD3neg" = WhichCells(dat, expression = CD3D <= 2)),
+               cols.highlight = c(
+                 "CD3pos" = "yellow", 
+                 "CD3neg" = "grey70"))
+```
+
+We can also split the image such that we have 1 panel each for each group.
+
+```{r}
+SpatialDimPlot(dat, pt.size.factor = pt_size, image.alpha = 0.3,
+               cells.highlight =  list(
+                 "CD3pos" = WhichCells(dat, expression = CD3D > 2),
+                 "CD3neg" = WhichCells(dat, expression = CD3D <= 2)),
+               cols.highlight = c("yellow", "grey70"),
+               facet.highlight = TRUE)
+```
+
+## Further customising the plots
+
+Both `SpatialFeaturePlot` and `SpatialDimPlot` will return a `ggplot` object,
+which we can modify using the functions and notations built into the `ggplot2` package.
+
+As an example, let's update a feature plot showing CD3D expression such that we: 
+
+1. Use the viridis colour scheme.
+2. Rename `CD3D` to `CD3D SCTransformed exp`
+3. Have a black background and white axes
+
+```{r}
+# Default SpatialFeature Plot
+plt_dark_bg <- SpatialFeaturePlot(
+  dat, 
+  features = "CD3D",
+  pt.size.factor = pt_size,
+  image.alpha = 0
+) 
+
+# 1) Overriding the colour scheme to viridis
+plt_dark_bg <- plt_dark_bg + scale_fill_viridis_c(option = 'viridis')
+
+# 2) Rename `CD3D` to `CD3D SCTransformed exprssion`
+plt_dark_bg <- plt_dark_bg + labs(fill='CD3D SCTransformed exp') 
+
+# 3) Have a black background and white axes
+plt_dark_bg <- plt_dark_bg +
+  theme_minimal() + 
+  theme(
+  legend.text = element_text(colour = "white"),
+  legend.title = element_text(colour = "white"),
+  legend.background = element_rect(fill = "black"),
+  plot.background = element_rect(fill = "black"),
+  panel.grid = element_blank(),
+  axis.text = element_text(colour = "white"),
+  axis.line = element_line(colour = "white")
+) 
+plt_dark_bg
+```
+
+Since the plot is a ggplot object, we can export them using either the
+export button in Rstudio's panel, or the ggsave function:
+
+```{r eval=FALSE}
+ggsave(filename="visium/data/spatial_plot_darkbg.png", plot=plt_dark_bg)
+```
+
+<hr>
+
+<details>
+<summary>Customising SpatialFeaturePlot with multiple features</summary>
+
+<hr>
+
+When there are multiple features drawn using `SpatialFeaturePlot`, 
+the resulting object is no longer a ggplot object but rather a "Large patchwork" object, 
+an object generated by the [patchwork package](https://patchwork.data-imaginist.com/index.html).
+This package is commonly used for combining plots in R.
+In actual fact, the large patchwork object itself is a list where each element is a ggplot object.
+Thus, to modify the plot, you will just need to override each object like above. 
+
+</details>
+
+<hr>
+

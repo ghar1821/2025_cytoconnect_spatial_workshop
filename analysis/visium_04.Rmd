@@ -1,0 +1,430 @@
+---
+title: "Visium Part 4"
+author: "Givanna Putri, Thomas O'neil"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+In this part of the workshop, we will learn how to use module scoring, clustering, and
+deconvolution to resolve the cell types in each spot.
+From there, we will then explore what interesting biology visium data can offer,
+including finding spatially variable genes.
+
+## Load packages and data
+
+```{r message=FALSE}
+library(Seurat)
+library(qs2)
+library(ggplot2)
+library(scales)
+library(spacexr)
+```
+
+We will be using the Seurat object that we have QCed and normalised in [part 2](visium_02.html).
+
+```{r}
+dat <- qs_read(file.path(here::here(), "data", "visium", "data", "visium_seurat_qced_norm.qs2"))
+dat
+```
+
+## Module scoring
+
+Module scoring is a simple yet powerful way of ***inferring*** what cell types are likely
+to be present in which spot based on a set of signatures/marker genes (a module).
+It uses predefined sets of signature or marker genes (modules) to calculate scores 
+that reflect the expression levels of these genes across different spots.
+
+It is particularly useful when you have predefined cell types and their corresponding marker genes, 
+allowing you to assess the presence or absence of these cell types in your data. 
+Module scoring can be advantageous when you have the signatures of the cell types that are of interest,
+or if you have previously analysed data from different omics (e.g., bulk RNA seq) and
+derived a set of signatures you want to focus on.
+
+```{r}
+# for finding genes
+# Features(dat_fil)[grep("S100B.*", Features(dat_fil))]
+
+genes_to_score <- list(
+  endothelial = c("PLVAP", "VWF", "PECAM1", "ERG"),
+  tumour = c("EPCAM", "EGFR", "CEACAM6", "MUC1"),
+  fibroblast = c("COL1A1", "COL1A2", "VIM", "FAP", "PDGFRA", "THY1", "S100A4"),
+  bcell = c("PTPRC", "MS4A1", "CD79A", "MZB1"),
+  tcell = c("PTPRC", "CD3D", "CD3E", "CD3G"),
+  myeloid = c("PTPRC", "ITGAX", "ITGAM", "CD14", "LYZ", "LILRA4", "IRF7")
+)
+
+dat <- AddModuleScore(
+  object = dat, features = genes_to_score,
+  seed = 42
+)
+
+head(dat[[]])
+```
+
+For a given module, a score is computed as the average expression of genes in the module,
+adjusted by the aggregated expression of a control set of genes 
+(defaults to all genes in the data).
+A positive score would suggest that this module of genes is expressed in a particular spot
+more highly than would be expected (given the average expression of this module across the population).
+Importantly, the scores are not absolute scores, meaning you should not compare them
+across different experiments.
+
+However, it is important to note that the score produces only represent the ***relative
+enrichment*** of a set of genes in a spot, and that it represents neither the proportion
+nor the absolute count of a cell type therein.
+The score only provides the probability for a given cell type to be present in a spot.
+
+In the example above, we have 6 modules defined in the `genes_to_score` list.
+By default, Seurat will store the scores as new columns in the spot metadata, named
+Cluster1, Cluster2, ..., Cluster6.
+Each column corresponds to 1 module.
+Cluster1 denotes score for endothelial cells, Cluster2 for tumour cells, etc.
+For ease of subsequent interpretation, we should rename these.
+
+```{r}
+dat[[names(genes_to_score)]] <- dat[[paste0("Cluster", seq(6))]]
+head(dat[[]])
+```
+
+We can visualise the scores using SpatialFeaturePlot:
+
+```{r fig.dim=c(10, 10)}
+SpatialFeaturePlot(
+  dat,
+  features = names(genes_to_score),
+  pt.size.factor = 5,
+  image.alpha = 0.5
+)
+```
+
+## Cluster spots
+
+We can also cluster the spots based on their gene expressions.
+This is especially handy if you are unsure what cell types you want to find.
+
+```{r}
+dat <- RunPCA(dat, assay = "SCT", verbose = FALSE)
+dat <- FindNeighbors(dat, reduction = "pca", dims = 1:10, verbose = FALSE)
+# increase resolution to find more clusters
+dat <- FindClusters(dat, verbose = FALSE, resolution = 0.5, random.seed = 42)
+
+SpatialDimPlot(
+  dat,
+  group.by = "seurat_clusters",
+  label = TRUE,
+  pt.size.factor = 5,
+  image.alpha = 0.3,
+  label.size = 5
+) + scale_fill_viridis_d(option = "turbo")
+```
+
+Since visium is a spot based technology, a spot can contain multiple cell types
+that are commonly grouped into different clusters.
+Thus grouping spots into clusters are not ideal as within a cluster, you may get
+an assortment of cell types rather than just one.
+But, this is better than nothing.
+
+## Cell type deconvolution
+
+Cell type deconvolution is very commonly used for analysing visium data to infer
+the cell types that are present in a spot and their proportions.
+It uses an annotated scRNAseq data as a reference to do this.
+Importantly, for this to work as intended, it is important to make sure that both the
+visium data and the scRNAseq data are of the same biology (they do not need
+to be from the same sample).
+
+For this workshop, we will use the [RCTD deconvolution algorithm](https://www.nature.com/articles/s41587-021-00830-w)
+provided by the [spacexr package](https://github.com/dmcable/spacexr).
+For the reference scRNAseq data, we will use one of the scRNAseq data that accompanies the
+visium data.
+
+```{r fig.dim=c(15, 10)}
+# Download from onedrive
+sc_data <- qs_read(file.path(here::here(), "data", "visium", "data", "sc_seurat_object_10x.qs2"))
+DimPlot(sc_data, reduction = "umap", group.by = c("Level1", "Level2", "Patient"), ncol=2)
+```
+
+Run RCTD - this can take some time!:
+
+```{r warning=FALSE, message=FALSE}
+# Prepare the single cell data
+sc_counts <- sc_data[['RNA']]$counts
+lbls <- as.factor(sc_data$Level1)
+nUMI <- sc_data$nCount_originalexp
+
+ref_sc <- Reference(
+  counts = sc_counts, 
+  cell_types = lbls,
+  nUMI = nUMI
+)
+
+# Prepare the visium data
+spat_counts <- dat[['Spatial']]$counts
+spat_nUMI <- colSums(spat_counts)
+# Note GetTissueCoordinates is needed because RCTD wants the x,y coordinates of the spots
+spot_coords <- GetTissueCoordinates(dat)[, 1:2]
+
+query_spat <- SpatialRNA(
+  coords = spot_coords,
+  counts = spat_counts,
+  nUMI = spat_nUMI
+)
+
+# set max_cores to a reasonable number, don't overdo it!
+RCTD <- create.RCTD(
+  spatialRNA = query_spat, 
+  reference = ref_sc, 
+  max_cores = 13
+)
+# Note, full_mode option is reasonable for visium as we don't really want to restrict the
+# number of cell types per spot.
+# ‘doublet mode’ (at most 1-2 cell types per pixel), 
+# ‘full mode’ (no restrictions on number of cell types), or 
+# ‘multi mode’ (finitely many cell types per pixel, e.g. 3 or 4).
+RCTD <- run.RCTD(RCTD, doublet_mode = "full")
+
+# qsave the object
+qs_save(RCTD, file.path(here::here(), "data", "visium", "data", "rctd_decon_out.qs2"))
+```
+
+Results of RCTD are stored in `@results`.
+There are lots of information in there.
+Let's focus on the `weights` which gives estimated proportions of each cell type in each spot.
+It needs to be normalised so they sum up to 1.
+
+```{r}
+norm_weights <- normalize_weights(RCTD@results$weights) 
+head(norm_weights)
+```
+
+We can then attach it to our Seurat object and plot it.
+
+```{r fig.dim=c(15, 15)}
+colnames(norm_weights) <- paste0("decon_", colnames(norm_weights))
+dat <- AddMetaData(dat, metadata = norm_weights)
+head(dat[[]])
+
+SpatialFeaturePlot(
+  object = dat, 
+  features = colnames(norm_weights),
+  pt.size.factor = 5,
+  image.alpha = 0.3,
+  ncol = 4
+)
+```
+
+We could also draw UMAP coloured by the proportion of different cell types:
+
+```{r fig.dim=c(15, 15)}
+dat <- RunUMAP(dat, reduction = "pca", dims = 1:10)
+FeaturePlot(dat, features = colnames(norm_weights))
+```
+
+Where we can deduce that we have spots that contain mostly or wholly one cell type,
+but we also have regions that have a mix of cell types.
+
+## Comparing module scoring, clustering, and deconvolution
+
+For cell types that we have matching module scoring for, let's compare them against
+the results of RCTD:
+
+```{r fig.dim=c(20, 20)}
+feat_plt <- SpatialFeaturePlot(
+  object = dat, 
+  features = c(
+    "endothelial", "decon_Endothelial",
+    "tumour", "decon_Tumor",
+    "fibroblast", "decon_Fibroblast",
+    "bcell", "decon_B cells",
+    "tcell", "decon_T cells",
+    "myeloid", "decon_Myeloid",
+    "decon_Intestinal Epithelial", "decon_Smooth Muscle",
+    "decon_Neuronal"
+  ),
+  pt.size.factor = 6,
+  image.alpha = 0.3,
+  ncol = 6
+)
+
+clust_plt <- SpatialDimPlot(
+  object = dat,
+  group.by = "seurat_clusters",
+  label = TRUE,
+  label.size = 3,
+  pt.size.factor = 5,
+  image.alpha = 0.3
+) + NoLegend()
+
+feat_plt + clust_plt
+```
+
+Comparing clusters and deconvolution, we can see clusters that correspond well
+to contain just one cell types, e.g., cluster 4 contains smooth muscle cells,
+cluster 0 and 1 are tumour cells.
+However, we also have cluster 3, 5, 6, 7 which have mix bag of immune cells,
+endothelial cells, epithelial cells, and fibroblasts.
+
+Comparing the module scoring and deconvolution, we can see areas where we get some concordance,
+in that areas that shows high module score tend to also estimated to contain
+corresponding cell types after deconvolution.
+
+However, we also see some differences.
+For example, we have a region on the bottom right that shows high
+score for tumour module but the deconvolution detected no tumour at all.
+Instead, they are deconvolved into endothelial cells.
+On the flip side, we also have a region at the bottom middle where
+deconvolution detected some T cells but module scoring showed low signals in T cells module.
+
+For T cells, we can check the deconvolution against CD3 genes:
+
+```{r fig.dim=c(5, 15)}
+SpatialFeaturePlot(
+  object = dat, 
+  features = c(
+    "CD3E", "CD3D", "CD3G", "decon_T cells"
+  ),
+  pt.size.factor = 5,
+  image.alpha = 0.3,
+  ncol = 1
+)
+```
+
+For the tumour scoring vs epithelial deconvolution, we can look into some markers
+to see if we can determine whether they are epithelial or tumour or tumour epithelial?
+It is worth noting that we did not have any epithelial module in our module scoring.
+
+```{r fig.dim=c(10, 10)}
+SpatialFeaturePlot(
+  object = dat, 
+  features = c(
+    "CDH1", "KRT8", "KRT19", "CD44", "VIM",
+    genes_to_score[['tumour']]
+  ),
+  pt.size.factor = 5,
+  image.alpha = 0.3,
+  ncol = 5
+)
+```
+
+We have high and medium expression of CDH1 which means the epithelial cells are retaining
+their cell-cell adhesion molecules.
+VIM and CD44 are commonly associated with EMT, but they are lowly expressed.
+KRT8, KRT19, and the remaining genes we have in the tumour module can be expressed on epithelial cells.
+So together, it may well be that these are normal epithelial cells rather than tumour cells.
+But because our tumour module encapsulates genes that are commonly associated with 
+epithelial cells, our module scoring led us to briefly believe we have a tumour region there.
+
+## Spatially variable genes
+
+Common analysis perform on spatial data is finding spatially variable genes.
+These are genes that exhibit significant variability in expression levels across 
+different locations within the tissue.
+
+```{r warning=FALSE}
+# require HVGs to already be detected, which SCTransform would have done.
+# the function below takes a while to run. consider reducing the number of HVGs
+dat <- FindSpatiallyVariableFeatures(
+  dat,
+  assay = "SCT",
+  features = VariableFeatures(dat)[1:500],
+  selection.method = 'moransi'
+)
+```
+
+Let's visualise some of them:
+
+```{r fig.dim=c(10, 10)}
+# a bit of data wrangling to get SVGs
+svgs_meta <- dat[['SCT']][[]]
+svgs_meta <- subset(svgs_meta, moransi.spatially.variable == TRUE)
+svgs_meta <- svgs_meta[order(svgs_meta$moransi.spatially.variable.rank), ]
+
+SpatialFeaturePlot(
+  dat,
+  features = head(rownames(svgs_meta), 10),
+  ncol = 5,
+  image.alpha = 0.3,
+  pt.size.factor = 5
+) + ggtitle("Top 10 SVGs")
+
+```
+
+SVGs are different from highly variable genes (HVGs).
+HVGs are genes that show significant variability in expression across different cells or conditions, 
+but this variability does not necessarily correlate with spatial location.
+Let's compare them - TMEM200B, CLEC10A are HVGs but not SVGs while SYNM, MGP are HVGs:
+
+```{r}
+SpatialFeaturePlot(
+  dat,
+  features = c(head(rownames(svgs_meta), 2), "TMEM200B", "CLEC10A"),
+  ncol = 2,
+  image.alpha = 0.3,
+  pt.size.factor = 5
+)
+```
+
+SVGs are good for finding genes which expression varies across different regions while
+HVGs are good for finding genes which distinguishes different cell types or groups
+regardless of the genes' spatial context.
+
+We can inspect SVGs against the cell type deconvolution
+to see if there are relationship between the different cell types and the genes:
+
+```{r fig.dim=c(20, 20)}
+SpatialFeaturePlot(
+  dat,
+  features = c(
+    head(rownames(svgs_meta), 9), colnames(norm_weights)
+  ),
+  ncol = 5,
+  image.alpha = 0.3,
+  pt.size.factor = 5
+)
+```
+
+This plot indicates that not all tumour regions may be equal.
+The top and right regions seem to express CXCL2, CXCL3, GPX2, and SPINK1.
+The one in the left middle, are lacking CXCL2, CXCL3, and SPINK1.
+Notably, it is surrounded by several immune cells, which altogether hint at the 
+possibility of the two tumour regions may be undergoing different biological processes. 
+
+We can also grab top few genes and run pathway analysis to see which biological
+processes are commonly associated with those genes. 
+There are many softwares to do this, [Metascape](https://metascape.org/) is one of them.
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/visium_metascape_go.png", error = FALSE)
+```
+
+### Visual inferrence of cell-cell communications
+
+Now that we have somewhat determine what cell types reside in which region,
+we can use SpatialFeaturePlot to ***shallowly*** infer cell-cell communication
+by visual inspection.
+
+For example, SIRPA and CD47 is a common receptor ligand pair between macrophages and tumour cells.
+CD47 ligand is commonly sent out by tumour cells to tell macrophages to not eat them.
+This is quite a well known immune mechanism employed by tumour cells.
+
+```{r fig.dim=c(10, 10)}
+SpatialFeaturePlot(
+  dat,
+  features = c(
+    "decon_Tumor", "decon_Myeloid",
+    "CD68", "CD14", "CD163",
+    "SIRPA", "CD47"
+  ),
+  ncol = 5,
+  pt.size.factor = 5,
+  image.alpha = 0.3
+)
+```
+
+From the plot, we can infer that there are regions where macrophages and tumour cells co-exist
+SIRPA and CD47 are expressed, which shows that macrophages' inhibitory receptor is activated, 
+signalling it against phagocytosis.
+

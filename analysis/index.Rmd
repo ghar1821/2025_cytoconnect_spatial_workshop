@@ -8,4 +8,25 @@ editor_options:
   chunk_output_type: console
 ---
 
-Welcome to my research website.
+Cytoconnect 2025 Spatial Workshop.
+
+# Analysis Overview {-}
+
+For the visium analysis, we will be using the colorectal cancer data from 10x.
+The data can be found [here](https://www.10xgenomics.com/platforms/visium/product-family/dataset-human-crc).
+
+Publication for the data:
+```
+Oliveira, M.F.d., Romero, J.P., Chung, M. et al. 
+High-definition spatial transcriptomic profiling of immune cell populations in colorectal cancer. 
+Nat Genet 57, 1512–1523 (2025). 
+https://doi.org/10.1038/s41588-025-02193-3
+```
+
+## Setup
+
+| Rmd file                                        | Topics                       |
+|:---------                                       |:-----------------------------|
+| [setup](setup.html)                             | Downloading data and packages|
+
+Please run codes in the Rmd file before coming to the workshop.

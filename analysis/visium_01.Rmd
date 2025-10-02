@@ -1,0 +1,293 @@
+---
+title: "Visium part 1"
+author: "Givanna Putri, Thomas O'neil"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+In this part of the visium workshop, we will introduce the dataset we will be using 
+in the visium workshop, learn how to load it up into a Seurat object and
+interrogate it.
+
+## Load libraries
+
+```{r message=FALSE}
+library(Seurat)
+library(qs2)
+```
+
+## The dataset
+
+The data used for this tutorial is an FFPE tissue from a patient with colorectal cancer.
+It is described in a bioRxiv paper: https://doi.org/10.1101/2024.06.04.597233
+
+The data can be downloaded from [here](https://www.10xgenomics.com/products/visium-hd-spatial-gene-expression/dataset-human-crc).
+Choose Visium CytAssist v2 Sample P2 CRC on the tab on the left.
+
+## Obtaining the spot x gene matrix
+
+To get a spot x gene matrix, one typically have to process the raw data 
+using the [Spaceranger](https://www.10xgenomics.com/support/software/space-ranger/latest)
+software from 10x.
+Depending on your experiment, running Spaceranger can be very complex.
+It is beyond the scope of this workshop. 
+
+If you are keen to try running Spaceranger, here is a bash script you can use for this dataset:
+
+```{bash, eval=FALSE}
+#!/bin/bash
+
+# make sure you specify which folder is datdir and refdir
+spaceranger count \
+    --id="Visium_FFPE_p2_crc" \
+    --transcriptome=$refdir \
+    --probe-set=$datadir/Visium_V2_Human_Colon_Cancer_P2_probe_set.csv \
+    --fastqs=$datadir/Visium_V2_Human_Colon_Cancer_P2_fastqs \
+    --cytaimage=$datadir/Visium_V2_Human_Colon_Cancer_P2_image.tif \
+    --image=$datadir/Visium_V2_Human_Colon_Cancer_P2_tissue_image.btf \
+    --slide=V53A10-078 \
+    --area=B1\
+    --loupe-alignment=$datadir/Visium_V2_Human_Colon_Cancer_P2_alignment_file.json \
+    --localcores=20 \
+    --localmem=60 \
+    --create-bam=true
+
+```
+
+Before running spaceranger, make sure you download all the input files use in the 
+code block above from [here](https://www.10xgenomics.com/products/visium-hd-spatial-gene-expression/dataset-human-crc) -
+(choose Visium CytAssist v2 Sample P2 CRC), as well as the relevant pre-built reference 
+genome [here](https://www.10xgenomics.com/support/software/cell-ranger/downloads#reference-downloads).
+
+Spaceranger is quite resource hungry.
+So make sure you run it in a computer with a sizeable amount of resources available
+or preferably on a High Performance Computing platform.
+
+After running Spaceranger, you will get a lot of folders and files. 
+The ones that you need to create a Seurat object are located in the `outs` folder.
+It will contain the following files and folders:
+
+```{bash eval=FALSE}
+tree outs/
+
+outs/
+├── analysis/
+│   ├── clustering/
+│   ├── diffexp/
+│   ├── pca/
+│   ├── tsne/
+│   └── umap/
+├── cloupe.cloupe
+├── deconvolution/
+├── filtered_feature_bc_matrix/
+│   ├── barcodes.tsv.gz
+│   ├── features.tsv.gz
+│   └── matrix.mtx.gz
+├── filtered_feature_bc_matrix.h5
+├── metrics_summary.csv
+├── molecule_info.h5
+├── possorted_genome_bam.bam
+├── possorted_genome_bam.bam.bai
+├── probe_set.csv
+├── raw_feature_bc_matrix/
+│   ├── barcodes.tsv.gz
+│   ├── features.tsv.gz
+│   └── matrix.mtx.gz
+├── raw_feature_bc_matrix.h5
+├── raw_probe_bc_matrix.h5
+├── spatial/
+│   ├── aligned_fiducials.jpg
+│   ├── aligned_tissue_image.jpg
+│   ├── cytassist_image.tiff
+│   ├── detected_tissue_image.jpg
+│   ├── scalefactors_json.json
+│   ├── spatial_enrichment.csv
+│   ├── tissue_hires_image.png
+│   ├── tissue_lowres_image.png
+│   └── tissue_positions.csv
+└── web_summary.html
+
+```
+
+Brief description of the most frequently used files, some of which, we will be using in 
+this workshop:
+
+- `web_summary.html`: Spaceranger run summary metrics and plots. This file will give
+you some information about the samples, e.g., how many reads were detected
+and successfully mapped to the reference genome, etc.
+- `cloupe.cloupe`: Loupe Browser visualization and analysis file to load
+into [10x Loupe Browser software](https://www.10xgenomics.com/support/software/loupe-browser/latest). 
+Spaceranger will run few cookie cutter analysis on your data. 
+You can view the output by loading this file into the Loupe Browser.
+- `spatial/`:	A folder containing outputs that capture the spatial information of 
+your sample.
+Packages such as Seurat is likely to require files in this folder to work properly.
+- `filtered_feature_bc_matrix (folder or the h5 file)`: *Filtered* matrix containing the number of UMIs 
+associated with a gene (row) and a spot barcode (column). 
+The matrix is filtered as it only includes spots associated with the tissue. 
+These information are provided as either a combination of mtx file (for the matrix) and tsv files (for
+information on the features and barcodes) stored in a folder, or as one HDF5 file (the h5 file).
+Either can be used as an input to packages such as Seurat for downstream analyses.
+- `raw_feature_bc_matrices (folder or the h5 file)`: Same information provided in filtered_feature_bc_matrix
+but *unfiltered*, i.e. keeping all the barcodes, including those that may not be associated with
+the tissue.
+This matrix is a lot larger than the one in filtered_feature_bc_matrix.
+
+Full description of the generated files and folders are available [here](https://www.10xgenomics.com/support/software/space-ranger/latest/analysis/outputs/output-overview).
+
+
+## Loading data into Seurat Object
+
+To do this, we will need the H5 file and the spatial folder that came from SpaceRanger.
+*There is no need to purposely run SpaceRanger to get these files. 10x kindly provided
+them on their website: https://www.10xgenomics.com/products/visium-hd-spatial-gene-expression/dataset-human-crc
+(choose Visium CytAssist v2 Sample P2 CRC).*
+
+
+The spatial folder is required for Seurat to find the following extra information:
+
+* `tissue_lowres_image.png`: the image of the slide in low resolution.
+* `scalefactors_json.json`: the scale factors to convert the high-resolution coordinates and the scaled-down coordinates.
+* `tissue_positions_list.csv`: coordinates for each spot
+
+We can use the code block below to import the data into a Seurat object.
+However, before doing so, you most likely have the change the `data.dir` 
+parameter to point to the directory where you store the H5 file and the spatial folder.
+In this example, they are stored in a "data" folder of our current working directory.
+
+```{r}
+dat <- Load10X_Spatial(
+  data.dir = file.path(here::here(), "data", "visium", "raw"),
+  filename = 'Visium_V2_Human_Colon_Cancer_P2_filtered_feature_bc_matrix.h5'
+)
+```
+
+## Inspecting Seurat object
+
+
+We can inspect the object to see the number of spots and genes there are in the dataset. 
+
+```{r}
+# 4,269 spots - samples in the seurat object description
+# 18,085 genes.
+dat
+```
+
+A Seurat object can contain multiple Assays to store data from different omics technologies in one object.
+Since we have only loaded a visium data, we only have one assay called "Spatial".
+You can only have one assay "active" at a time.
+To change the active assay you can run the following code block - with "Spatial" being the name of the assay
+to activate:
+
+```{r}
+DefaultAssay(dat) <- "Spatial"
+```
+
+Within an assay, we can have multiple Layers, each containing one spot by gene matrix.
+The idea is we can perform some transformations or apply some functions
+to the matrix in a layer and store it in another layer.
+This benefit will be a lot clearer as we progress through the workshop.
+
+By default, when we run `Load10x_Spatial`, Seurat will store the spot by gene matrix
+in the `Spatial` assay under the `counts` layer.
+You can change this assay name by specifying a different name for the `assay` parameter when running the 
+`Load10x_Spatial` function.
+
+We can retrieve the spot by gene matrix like so:
+
+```{r}
+# showing only 20 genes for 5 spots
+head(dat[["Spatial"]]$counts, c(20, 5))
+```
+
+By default, genes (features) are stored as rows and spots are stored as columns.
+
+### Gene and spot metadata
+
+We can retrieve the name of the genes we have loaded in like so:
+
+```{r}
+# only showing 20 genes. Remove the head function to show everything.
+head(rownames(dat), 20)
+# only showing 20 genes. Remove the head function to show everything.
+head(Features(dat), 20)
+```
+
+And the unique name assigned to each spot like so:
+
+```{r}
+# only showing 20 spots Remove the head function to show everything.
+head(colnames(dat), 20)
+# only showing 20 spots Remove the head function to show everything.
+head(Cells(dat), 20)
+```
+
+We can also query the seurat object as if it is a table by using base R functions
+like `ncol`, `nrow`, and `dim`:
+
+```{r}
+# how many spots
+ncol(dat)
+
+# how many genes
+nrow(dat)
+
+# how many genes and spots (rows and cols respectively)
+dim(dat)
+```
+
+### Metadata 
+
+Metadata for the spots can be retrieved like so:
+
+```{r}
+# only showing 20 rows. Remove the head function to show everything.
+head(dat[[]], 20)
+```
+
+Here, each row is a spot. 
+`nCount_Spatial` shows the total number of transcripts (specifically total number of unique UMIs) in a spot.
+`nFeature_Spatial` shows how many unique genes are expressed per spot.
+`orig.ident` refers to the "original identity" of the sample. 
+These information are all pre-filled and computed by the `Load10x_Spatial`function.
+
+The metadata in Seurat object is actually stored as a data.frame.
+Thus, if you know the column you want to inspect, you can interact with it as
+if it is a data.frame, like so
+
+```{r}
+# only showing 20 rows. Remove the head function to show everything.
+head(dat$nCount_Spatial, 20)
+```
+
+We can also add more metadata to it using data.frame notation.
+For example, we can add a separate column identifying the patient the data originates from:
+
+```{r}
+dat$patient_id <- "P2"
+# only showing 20 rows. Remove the head function to show everything.
+head(dat[[]], 20)
+```
+
+To access the metadata associated with the genes, we can use similar notation
+but also include which assay we want to retrieve the metadata from.
+
+```{r}
+dat[['Spatial']][[]]
+```
+
+Currently, we have nothing in it.
+So do not be alarmed.
+
+Let's save the object now so we can use it in the subsequent sections.
+We can either save it as an RDS object using `saveRDS(dat, "output/visium/filtered_seurat.qs")` or as a
+QS object using the [qs2 package](https://cran.r-project.org/web/packages/qs2/vignettes/vignette.html).
+The latter is a lot quicker.
+
+```{r}
+qs_save(dat, file.path(here::here(), "data", "visium", "data", "visium_seurat.qs2"))
+```
+

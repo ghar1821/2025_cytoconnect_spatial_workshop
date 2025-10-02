@@ -7,15 +7,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-What license are you using for your code? See [choosealicense.com][choose] for
-help deciding. It's a convention to save a file `LICENSE` in the root of your
-Git repo that contains the license text.
+All analyses files are developed by Tom O'Neil, Givanna Putri, Felix Marsh-Wakefield,
+and Paula Niewold.
 
-What license are you using for the written content on your site? It is
-traditional to choose a [Creative Commons][cc] license for this type of content.
-
-[choose]: https://choosealicense.com/
-[cc]: https://creativecommons.org/choose/
-
-How should others cite your work? It's a convention to save a file `CITATION`
-in the root of your Git repo that contains the citation information.
+They are available under the [CC license](https://creativecommons.org/licenses/by/4.0/).
