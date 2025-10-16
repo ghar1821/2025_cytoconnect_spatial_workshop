@@ -163,6 +163,28 @@ dat <- Load10X_Spatial(
   data.dir = file.path(here::here(), "data", "visium", "raw"),
   filename = 'Visium_V2_Human_Colon_Cancer_P2_filtered_feature_bc_matrix.h5'
 )
+
+## If the data are provided in folders like 'filtered_feature_bc_matrix' and 'spatial', you can use Seurat::Read10X
+# Specify location where the 'filtered_feature_bc_matrix' and 'spatial' folders are
+
+# Read in matrix data
+# dat <- Seurat::Read10X("filtered_feature_bc_matrix")
+# dat <- Seurat::CreateSeuratObject(counts = dat,
+#                                   assay = "Spatial",
+#                                   project = "dataset")
+
+# Read in image data
+#https://github.com/satijalab/seurat/issues/5806
+# dat.img <- Seurat::Read10X_Image("spatial")
+
+# Correct the image data to match the Seurat object
+# dat.img <- dat.img[Seurat::Cells(dat)]
+# Seurat::DefaultAssay(dat.img) <- Seurat::DefaultAssay(dat)
+
+# Add the image to the object
+# dat[["slice"]] <- dat.img
+# rm(dat.img)
+
 ```
 
 ## Inspecting Seurat object
