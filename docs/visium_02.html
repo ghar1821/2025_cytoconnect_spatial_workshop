@@ -36,6 +36,8 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
 
 <link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
 <!-- Add a small amount of space between sections. -->
@@ -336,11 +338,20 @@ div.tocify {
   <a href="about.html">About</a>
 </li>
 <li>
+  <a href="setup.html">Setup</a>
+</li>
+<li>
   <a href="license.html">License</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop">
+    <span class="fab fa-github"></span>
+     
+    Source code
+  </a>
+</li>
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -380,7 +391,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-10-02
+<strong>Last updated:</strong> 2025-11-19
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -512,13 +523,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrong383f3f1">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomghar18212025cytoconnectspatialworkshoptreecf4dc7cd43be2dd08fcda3449f20c98274e4fb76targetblankcf4dc7ca">
 <span class="glyphicon glyphicon-ok text-success"
-aria-hidden="true"></span> <strong>Repository version:</strong> 383f3f1
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/tree/cf4dc7cd43be2dd08fcda3449f20c98274e4fb76" target="_blank">cf4dc7c</a>
 </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrong383f3f1"
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomghar18212025cytoconnectspatialworkshoptreecf4dc7cd43be2dd08fcda3449f20c98274e4fb76targetblankcf4dc7ca"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -527,7 +540,8 @@ and connecting the code version to the results is critical for
 reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version 383f3f1.
+The results in this page were generated with repository version
+<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/tree/cf4dc7cd43be2dd08fcda3449f20c98274e4fb76" target="_blank">cf4dc7c</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -543,10 +557,9 @@ were generated:
 <pre><code>
 Ignored files:
     Ignored:    .DS_Store
-
-Untracked files:
-    Untracked:  data/sc_seurat_object_10x.qs
-    Untracked:  data/visium/
+    Ignored:    data/.DS_Store
+    Ignored:    data/imc/
+    Ignored:    data/visium/
 
 </code></pre>
 <p>
@@ -596,7 +609,41 @@ Message
 Rmd
 </td>
 <td>
-383f3f1
+<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/blob/cf4dc7cd43be2dd08fcda3449f20c98274e4fb76/analysis/visium_02.Rmd" target="_blank">cf4dc7c</a>
+</td>
+<td>
+Givanna Putri
+</td>
+<td>
+2025-11-19
+</td>
+<td>
+wflow_publish(c("analysis/index.Rmd", "analysis/visium_01.Rmd",
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/ghar1821/2025_cytoconnect_spatial_workshop/8da421e03dad1419b5f0b88808f6e38c1b1cabcd/docs/visium_02.html" target="_blank">8da421e</a>
+</td>
+<td>
+Givanna Putri
+</td>
+<td>
+2025-10-02
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/blob/383f3f161533e8e8ea4ca2b4cedd0b0274d96001/analysis/visium_02.Rmd" target="_blank">383f3f1</a>
 </td>
 <td>
 Givanna Putri
@@ -628,7 +675,7 @@ library(ggplot2)
 library(scales)</code></pre>
 <p>We will be using the Seurat object that we have previously loaded in
 <a href="visium_01.html">part 1</a>.</p>
-<pre class="r"><code>dat &lt;- qs_read(file.path(here::here(), &quot;data&quot;, &quot;visium&quot;, &quot;data&quot;, &quot;visium_seurat.qs2&quot;))
+<pre class="r"><code>dat &lt;- qs_read(file.path(here::here(), &quot;data&quot;, &quot;visium&quot;, &quot;extdata&quot;, &quot;visium_seurat.qs2&quot;))
 dat</code></pre>
 <pre><code>An object of class Seurat 
 18085 features across 4269 samples within 1 assay 
@@ -675,6 +722,43 @@ ggplot(data.frame(spots = spots_per_gene), aes(x=spots)) +
   scale_x_continuous(breaks = pretty_breaks(10)) +
   scale_y_continuous(breaks = pretty_breaks(10))</code></pre>
 <p><img src="figure/visium_02.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-1">
+Past versions of unnamed-chunk-3-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-3-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/blob/8da421e03dad1419b5f0b88808f6e38c1b1cabcd/docs/figure/visium_02.Rmd/unnamed-chunk-3-1.png" target="_blank">8da421e</a>
+</td>
+<td>
+Givanna Putri
+</td>
+<td>
+2025-10-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>The histogram above illustrates how many genes (y-axis) are expressed
 in how many spots (x-axis). For example, the left most bar shows there
 are 12 genes that are not expressed in any spots at all.</p>
@@ -751,7 +835,7 @@ to “erase” those spots from the list by selecting them.</p>
 <hr>
 <p>After exporting the spots barcode in a csv file, we can load it up
 and remove them from the seurat object:</p>
-<pre class="r"><code>spots_to_remove &lt;- read.csv(&quot;https://raw.githubusercontent.com/ghar1821/asi_spatial_workshop_2024/refs/heads/master/docs/assets/spots_to_remove_v2.csv&quot;)
+<pre class="r"><code>spots_to_remove &lt;- read.csv(file.path(here::here(), &quot;data&quot;, &quot;visium&quot;, &quot;data&quot;, &quot;spots_to_remove_v2.csv&quot;))
 
 # add it as a metadata
 dat_fil[[]]$remove_spot_from_loupe &lt;- Cells(dat_fil) %in% spots_to_remove$Barcode
@@ -814,6 +898,43 @@ generated.</code></pre>
 
 plt1 + plt2 + plt3 + plt4</code></pre>
 <p><img src="figure/visium_02.Rmd/unnamed-chunk-6-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-1">
+Past versions of unnamed-chunk-6-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/blob/8da421e03dad1419b5f0b88808f6e38c1b1cabcd/docs/figure/visium_02.Rmd/unnamed-chunk-6-1.png" target="_blank">8da421e</a>
+</td>
+<td>
+Givanna Putri
+</td>
+<td>
+2025-10-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>The histograms and violin plots are great for determining the minimum
 cutoff for library size and/or number of genes expressed, while the
 scatter plot is handy to check whether the spots with low library size
@@ -865,6 +986,43 @@ utilizing &quot;counts&quot; layer instead.</code></pre>
 
 plt1 + plt2</code></pre>
 <p><img src="figure/visium_02.Rmd/unnamed-chunk-8-1.png" width="480" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-1">
+Past versions of unnamed-chunk-8-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-8-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/blob/8da421e03dad1419b5f0b88808f6e38c1b1cabcd/docs/figure/visium_02.Rmd/unnamed-chunk-8-1.png" target="_blank">8da421e</a>
+</td>
+<td>
+Givanna Putri
+</td>
+<td>
+2025-10-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>We will remove spots that have &gt; 12% mitochondria genes.</p>
 <pre class="r"><code>dat_fil &lt;- subset(dat_fil, subset = percent_mt &lt; 12)
 dat_fil</code></pre>
@@ -877,7 +1035,7 @@ Active assay: Spatial (17991 features, 0 variable features)
 </div>
 <div id="export-data-out" class="section level3">
 <h3>Export data out</h3>
-<pre class="r"><code>qs_save(dat_fil, file.path(here::here(), &quot;data&quot;, &quot;visium&quot;, &quot;data&quot;, &quot;visium_seurat_qced.qs2&quot;))</code></pre>
+<pre class="r"><code>qs_save(dat_fil, file.path(here::here(), &quot;data&quot;, &quot;visium&quot;, &quot;extdata&quot;, &quot;visium_seurat_qced.qs2&quot;))</code></pre>
 </div>
 </div>
 <div id="normalisation" class="section level2">
@@ -3908,6 +4066,43 @@ plt_raw &lt;- SpatialFeaturePlot(
 # Put all 3 plots side by side for comparison
 plt_raw + plt_sct + plt_lognorm</code></pre>
 <p><img src="figure/visium_02.Rmd/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-14-1">
+Past versions of unnamed-chunk-14-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-14-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/blob/8da421e03dad1419b5f0b88808f6e38c1b1cabcd/docs/figure/visium_02.Rmd/unnamed-chunk-14-1.png" target="_blank">8da421e</a>
+</td>
+<td>
+Givanna Putri
+</td>
+<td>
+2025-10-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <hr>
 <details>
 <summary>
@@ -3931,7 +4126,7 @@ SCTransform.</p>
 DefaultAssay(dat_fil) &lt;- &quot;SCT&quot;
 
 # save so we can reload if we need to
-qs_save(dat_fil, file.path(here::here(), &quot;data&quot;, &quot;visium&quot;, &quot;data&quot;, &quot;visium_seurat_qced_norm.qs2&quot;))</code></pre>
+qs_save(dat_fil, file.path(here::here(), &quot;data&quot;, &quot;visium&quot;, &quot;extdata&quot;, &quot;visium_seurat_qced_norm.qs2&quot;))</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">

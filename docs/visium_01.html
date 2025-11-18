@@ -523,15 +523,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomghar18212025cytoconnectspatialworkshoptree0706e91de62463233b153f6de122e03ae3a3efcetargetblank0706e91a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomghar18212025cytoconnectspatialworkshoptreecf4dc7cd43be2dd08fcda3449f20c98274e4fb76targetblankcf4dc7ca">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/tree/0706e91de62463233b153f6de122e03ae3a3efce" target="_blank">0706e91</a>
+<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/tree/cf4dc7cd43be2dd08fcda3449f20c98274e4fb76" target="_blank">cf4dc7c</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomghar18212025cytoconnectspatialworkshoptree0706e91de62463233b153f6de122e03ae3a3efcetargetblank0706e91a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomghar18212025cytoconnectspatialworkshoptreecf4dc7cd43be2dd08fcda3449f20c98274e4fb76targetblankcf4dc7ca"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -541,7 +541,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/tree/0706e91de62463233b153f6de122e03ae3a3efce" target="_blank">0706e91</a>.
+<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/tree/cf4dc7cd43be2dd08fcda3449f20c98274e4fb76" target="_blank">cf4dc7c</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -560,12 +560,6 @@ Ignored files:
     Ignored:    data/.DS_Store
     Ignored:    data/imc/
     Ignored:    data/visium/
-
-Untracked files:
-    Untracked:  analysis/IMC Vis.Rmd.old
-
-Unstaged changes:
-    Deleted:    analysis/IMC Vis.Rmd
 
 </code></pre>
 <p>
@@ -610,6 +604,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/blob/cf4dc7cd43be2dd08fcda3449f20c98274e4fb76/analysis/visium_01.Rmd" target="_blank">cf4dc7c</a>
+</td>
+<td>
+Givanna Putri
+</td>
+<td>
+2025-11-19
+</td>
+<td>
+wflow_publish(c("analysis/index.Rmd", "analysis/visium_01.Rmd",
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/ghar1821/2025_cytoconnect_spatial_workshop/7fbdd99f0027e9a7d1b3545738eb077144d17dd2/docs/visium_01.html" target="_blank">7fbdd99</a>
+</td>
+<td>
+Givanna Putri
+</td>
+<td>
+2025-11-19
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -824,7 +852,7 @@ object. However, before doing so, you most likely have the change the
 store the H5 file and the spatial folder. In this example, they are
 stored in a “data” folder of our current working directory.</p>
 <pre class="r"><code>dat &lt;- Load10X_Spatial(
-  data.dir = file.path(here::here(), &quot;data&quot;, &quot;visium&quot;, &quot;raw&quot;),
+  data.dir = file.path(here::here(), &quot;data&quot;, &quot;visium&quot;, &quot;data&quot;),
   filename = &#39;Visium_V2_Human_Colon_Cancer_P2_filtered_feature_bc_matrix.h5&#39;
 )
 
@@ -1055,11 +1083,11 @@ from.</p>
 <p>Currently, we have nothing in it. So do not be alarmed.</p>
 <p>Let’s save the object now so we can use it in the subsequent
 sections. We can either save it as an RDS object using
-<code>saveRDS(dat, "output/visium/filtered_seurat.qs")</code> or as a QS
-object using the <a
+<code>saveRDS(dat, "data/visium/extdata/filtered_seurat.rds")</code> or
+as a QS object using the <a
 href="https://cran.r-project.org/web/packages/qs2/vignettes/vignette.html">qs2
 package</a>. The latter is a lot quicker.</p>
-<pre class="r"><code>qs_save(dat, file.path(here::here(), &quot;data&quot;, &quot;visium&quot;, &quot;data&quot;, &quot;visium_seurat.qs2&quot;))</code></pre>
+<pre class="r"><code>qs_save(dat, file.path(here::here(), &quot;data&quot;, &quot;visium&quot;, &quot;extdata&quot;, &quot;visium_seurat.qs2&quot;))</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">

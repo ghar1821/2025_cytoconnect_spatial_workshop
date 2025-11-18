@@ -36,6 +36,8 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
 
 <link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
 <!-- Add a small amount of space between sections. -->
@@ -336,11 +338,20 @@ div.tocify {
   <a href="about.html">About</a>
 </li>
 <li>
+  <a href="setup.html">Setup</a>
+</li>
+<li>
   <a href="license.html">License</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop">
+    <span class="fab fa-github"></span>
+     
+    Source code
+  </a>
+</li>
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -380,7 +391,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-10-02
+<strong>Last updated:</strong> 2025-11-19
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -512,13 +523,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrong383f3f1">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomghar18212025cytoconnectspatialworkshoptreecf4dc7cd43be2dd08fcda3449f20c98274e4fb76targetblankcf4dc7ca">
 <span class="glyphicon glyphicon-ok text-success"
-aria-hidden="true"></span> <strong>Repository version:</strong> 383f3f1
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/tree/cf4dc7cd43be2dd08fcda3449f20c98274e4fb76" target="_blank">cf4dc7c</a>
 </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrong383f3f1"
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomghar18212025cytoconnectspatialworkshoptreecf4dc7cd43be2dd08fcda3449f20c98274e4fb76targetblankcf4dc7ca"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -527,7 +540,8 @@ and connecting the code version to the results is critical for
 reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version 383f3f1.
+The results in this page were generated with repository version
+<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/tree/cf4dc7cd43be2dd08fcda3449f20c98274e4fb76" target="_blank">cf4dc7c</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -543,10 +557,9 @@ were generated:
 <pre><code>
 Ignored files:
     Ignored:    .DS_Store
-
-Untracked files:
-    Untracked:  data/sc_seurat_object_10x.qs
-    Untracked:  data/visium/
+    Ignored:    data/.DS_Store
+    Ignored:    data/imc/
+    Ignored:    data/visium/
 
 </code></pre>
 <p>
@@ -596,7 +609,41 @@ Message
 Rmd
 </td>
 <td>
-383f3f1
+<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/blob/cf4dc7cd43be2dd08fcda3449f20c98274e4fb76/analysis/visium_03.Rmd" target="_blank">cf4dc7c</a>
+</td>
+<td>
+Givanna Putri
+</td>
+<td>
+2025-11-19
+</td>
+<td>
+wflow_publish(c("analysis/index.Rmd", "analysis/visium_01.Rmd",
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/ghar1821/2025_cytoconnect_spatial_workshop/8da421e03dad1419b5f0b88808f6e38c1b1cabcd/docs/visium_03.html" target="_blank">8da421e</a>
+</td>
+<td>
+Givanna Putri
+</td>
+<td>
+2025-10-02
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/blob/383f3f161533e8e8ea4ca2b4cedd0b0274d96001/analysis/visium_03.Rmd" target="_blank">383f3f1</a>
 </td>
 <td>
 Givanna Putri
@@ -628,7 +675,7 @@ library(ggplot2)
 library(scales)</code></pre>
 <p>We will be using the Seurat object that we have QCed and normalised
 in <a href="visium_02.html">part 2</a>.</p>
-<pre class="r"><code>dat &lt;- qs_read(file.path(here::here(), &quot;data&quot;, &quot;visium&quot;, &quot;data&quot;, &quot;visium_seurat_qced_norm.qs2&quot;))
+<pre class="r"><code>dat &lt;- qs_read(file.path(here::here(), &quot;data&quot;, &quot;visium&quot;, &quot;extdata&quot;, &quot;visium_seurat_qced_norm.qs2&quot;))
 dat</code></pre>
 <pre><code>An object of class Seurat 
 35982 features across 3959 samples within 2 assays 
@@ -653,12 +700,86 @@ This warning is displayed once every 8 hours.
 Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
 generated.</code></pre>
 <p><img src="figure/visium_03.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-1">
+Past versions of unnamed-chunk-3-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-3-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/blob/8da421e03dad1419b5f0b88808f6e38c1b1cabcd/docs/figure/visium_03.Rmd/unnamed-chunk-3-1.png" target="_blank">8da421e</a>
+</td>
+<td>
+Givanna Putri
+</td>
+<td>
+2025-10-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Often, the spots may look too small, like in this case. We can
 increase it by increasing the <code>pt.size.factor</code> parameter.</p>
 <pre class="r"><code># store it so we can use the same number later on
 pt_size &lt;- 5
 SpatialFeaturePlot(dat, features = &quot;CD3D&quot;, pt.size.factor = pt_size)</code></pre>
 <p><img src="figure/visium_03.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-1">
+Past versions of unnamed-chunk-4-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-4-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/blob/8da421e03dad1419b5f0b88808f6e38c1b1cabcd/docs/figure/visium_03.Rmd/unnamed-chunk-4-1.png" target="_blank">8da421e</a>
+</td>
+<td>
+Givanna Putri
+</td>
+<td>
+2025-10-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>We can also adjust the opacity of the spots and the image underneath
 it by tuning the <code>alpha</code> and <code>image.alpha</code>
 parameter accordingly. The higher the number, the less opaque the spots
@@ -666,12 +787,123 @@ and image will be.</p>
 <pre class="r"><code># Dimming the spots
 SpatialFeaturePlot(dat, features = &quot;CD3D&quot;, pt.size.factor = pt_size, alpha = 0.3)</code></pre>
 <p><img src="figure/visium_03.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-1">
+Past versions of unnamed-chunk-5-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/blob/8da421e03dad1419b5f0b88808f6e38c1b1cabcd/docs/figure/visium_03.Rmd/unnamed-chunk-5-1.png" target="_blank">8da421e</a>
+</td>
+<td>
+Givanna Putri
+</td>
+<td>
+2025-10-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># Dimming the image
 SpatialFeaturePlot(dat, features = &quot;CD3D&quot;, pt.size.factor = pt_size, image.alpha = 0.5)</code></pre>
 <p><img src="figure/visium_03.Rmd/unnamed-chunk-5-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-2">
+Past versions of unnamed-chunk-5-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/blob/8da421e03dad1419b5f0b88808f6e38c1b1cabcd/docs/figure/visium_03.Rmd/unnamed-chunk-5-2.png" target="_blank">8da421e</a>
+</td>
+<td>
+Givanna Putri
+</td>
+<td>
+2025-10-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># Completely removing the image
 SpatialFeaturePlot(dat, features = &quot;CD3D&quot;, pt.size.factor = pt_size, image.alpha = 0)</code></pre>
 <p><img src="figure/visium_03.Rmd/unnamed-chunk-5-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-3">
+Past versions of unnamed-chunk-5-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/blob/8da421e03dad1419b5f0b88808f6e38c1b1cabcd/docs/figure/visium_03.Rmd/unnamed-chunk-5-3.png" target="_blank">8da421e</a>
+</td>
+<td>
+Givanna Putri
+</td>
+<td>
+2025-10-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>If a range is passed onto the <code>alpha</code> parameter, it will
 alter the minimum and maximum opacity. This is handy if you want to
 accentuate the higher expression as we can lower the minimum opacity
@@ -679,6 +911,43 @@ accentuate the higher expression as we can lower the minimum opacity
 <pre class="r"><code>SpatialFeaturePlot(dat, features = &quot;CD3D&quot;, pt.size.factor = 5, 
                    image.alpha = 0.5, alpha = c(0.5, 3))</code></pre>
 <p><img src="figure/visium_03.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-1">
+Past versions of unnamed-chunk-6-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/blob/8da421e03dad1419b5f0b88808f6e38c1b1cabcd/docs/figure/visium_03.Rmd/unnamed-chunk-6-1.png" target="_blank">8da421e</a>
+</td>
+<td>
+Givanna Putri
+</td>
+<td>
+2025-10-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>In the plot above, each spot is coloured by the expression of CD3D
 gene. Notably, because the active assay of the data was set to SCT
 before we run <code>SpatialFeaturePlot</code>, the CD3D expression we
@@ -692,24 +961,172 @@ layer:</p>
 SpatialFeaturePlot(dat, features = &quot;CD3D&quot;, pt.size.factor = pt_size, image.alpha = 0.5,
                    slot = &quot;count&quot;)</code></pre>
 <p><img src="figure/visium_03.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-1">
+Past versions of unnamed-chunk-7-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/blob/8da421e03dad1419b5f0b88808f6e38c1b1cabcd/docs/figure/visium_03.Rmd/unnamed-chunk-7-1.png" target="_blank">8da421e</a>
+</td>
+<td>
+Givanna Putri
+</td>
+<td>
+2025-10-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>In one SpatialFeaturePlot call, we can visualise multiple features.
 E.g., let’s visualise four genes, CD3D, CD3G, CD4, CD8A, :</p>
 <pre class="r"><code>DefaultAssay(dat) &lt;- &quot;SCT&quot;
 SpatialFeaturePlot(dat, pt.size.factor = 5, 
                    image.alpha = 0.5, features = c(&quot;CD3D&quot;, &quot;CD3G&quot;, &quot;CD4&quot;, &quot;CD8A&quot;))</code></pre>
 <p><img src="figure/visium_03.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-1">
+Past versions of unnamed-chunk-8-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-8-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/blob/8da421e03dad1419b5f0b88808f6e38c1b1cabcd/docs/figure/visium_03.Rmd/unnamed-chunk-8-1.png" target="_blank">8da421e</a>
+</td>
+<td>
+Givanna Putri
+</td>
+<td>
+2025-10-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>You can set how many columns do you want to spread the images across
 by specifying the parameter <code>ncol</code>.</p>
 <pre class="r"><code>SpatialFeaturePlot(dat, pt.size.factor = 5, 
                    image.alpha = 0.5, 
                    features = c(&quot;CD3D&quot;, &quot;CD3G&quot;, &quot;CD4&quot;, &quot;CD8A&quot;), ncol = 4)</code></pre>
 <p><img src="figure/visium_03.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-1">
+Past versions of unnamed-chunk-9-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-9-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/blob/8da421e03dad1419b5f0b88808f6e38c1b1cabcd/docs/figure/visium_03.Rmd/unnamed-chunk-9-1.png" target="_blank">8da421e</a>
+</td>
+<td>
+Givanna Putri
+</td>
+<td>
+2025-10-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>By default, the plot will focus on the the area of the tissue where
 the spots are. Disabling this by setting crop to FALSE will show the
 entire tissue.</p>
 <pre class="r"><code>SpatialFeaturePlot(dat, features = &quot;CD3D&quot;, crop=FALSE, image.alpha = 0.5, 
                    pt.size.factor = 3)</code></pre>
 <p><img src="figure/visium_03.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-1">
+Past versions of unnamed-chunk-10-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-10-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/blob/8da421e03dad1419b5f0b88808f6e38c1b1cabcd/docs/figure/visium_03.Rmd/unnamed-chunk-10-1.png" target="_blank">8da421e</a>
+</td>
+<td>
+Givanna Putri
+</td>
+<td>
+2025-10-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="spatialdimplot" class="section level2">
 <h2>SpatialDimPlot</h2>
@@ -720,6 +1137,43 @@ added in <a href="visium_01.html">part 1</a> before.</p>
 <pre class="r"><code>SpatialDimPlot(dat, group.by = &#39;patient_id&#39;, pt.size.factor = pt_size,
                image.alpha = 0.5)</code></pre>
 <p><img src="figure/visium_03.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-11-1">
+Past versions of unnamed-chunk-11-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-11-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/blob/8da421e03dad1419b5f0b88808f6e38c1b1cabcd/docs/figure/visium_03.Rmd/unnamed-chunk-11-1.png" target="_blank">8da421e</a>
+</td>
+<td>
+Givanna Putri
+</td>
+<td>
+2025-10-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>There are some parameters that are shared between SpatialDimPlot and
 SpatialFeaturePlot, like <code>pt.size.factor</code>,
 <code>image.alpha</code>, <code>alpha</code></p>
@@ -738,6 +1192,43 @@ SpatialDimPlot(dat, group.by = &#39;pretend_patient_id&#39;,
                pt.size.factor = pt_size, image.alpha = 0.5,
                cols = c(&quot;Adam&quot; = &quot;#0096FF&quot;, &quot;Jane&quot; = &quot;orange&quot;, &quot;Clare&quot; = &quot;#023020&quot;))</code></pre>
 <p><img src="figure/visium_03.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-12-1">
+Past versions of unnamed-chunk-12-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-12-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/blob/8da421e03dad1419b5f0b88808f6e38c1b1cabcd/docs/figure/visium_03.Rmd/unnamed-chunk-12-1.png" target="_blank">8da421e</a>
+</td>
+<td>
+Givanna Putri
+</td>
+<td>
+2025-10-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>We can also highlight only spots that belong to certain group and
 grey out the rest. E.g. let’s discretise spots based on their CD3D
 expression</p>
@@ -749,6 +1240,43 @@ expression</p>
                  &quot;CD3pos&quot; = &quot;yellow&quot;, 
                  &quot;CD3neg&quot; = &quot;grey70&quot;))</code></pre>
 <p><img src="figure/visium_03.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-13-1">
+Past versions of unnamed-chunk-13-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-13-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/blob/8da421e03dad1419b5f0b88808f6e38c1b1cabcd/docs/figure/visium_03.Rmd/unnamed-chunk-13-1.png" target="_blank">8da421e</a>
+</td>
+<td>
+Givanna Putri
+</td>
+<td>
+2025-10-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>We can also split the image such that we have 1 panel each for each
 group.</p>
 <pre class="r"><code>SpatialDimPlot(dat, pt.size.factor = pt_size, image.alpha = 0.3,
@@ -758,6 +1286,43 @@ group.</p>
                cols.highlight = c(&quot;yellow&quot;, &quot;grey70&quot;),
                facet.highlight = TRUE)</code></pre>
 <p><img src="figure/visium_03.Rmd/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-14-1">
+Past versions of unnamed-chunk-14-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-14-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/blob/8da421e03dad1419b5f0b88808f6e38c1b1cabcd/docs/figure/visium_03.Rmd/unnamed-chunk-14-1.png" target="_blank">8da421e</a>
+</td>
+<td>
+Givanna Putri
+</td>
+<td>
+2025-10-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="further-customising-the-plots" class="section level2">
 <h2>Further customising the plots</h2>
@@ -800,6 +1365,43 @@ plt_dark_bg &lt;- plt_dark_bg +
 ) 
 plt_dark_bg</code></pre>
 <p><img src="figure/visium_03.Rmd/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-15-1">
+Past versions of unnamed-chunk-15-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-15-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/blob/8da421e03dad1419b5f0b88808f6e38c1b1cabcd/docs/figure/visium_03.Rmd/unnamed-chunk-15-1.png" target="_blank">8da421e</a>
+</td>
+<td>
+Givanna Putri
+</td>
+<td>
+2025-10-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Since the plot is a ggplot object, we can export them using either
 the export button in Rstudio’s panel, or the ggsave function:</p>
 <pre class="r"><code>ggsave(filename=&quot;visium/data/spatial_plot_darkbg.png&quot;, plot=plt_dark_bg)</code></pre>
