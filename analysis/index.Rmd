@@ -33,7 +33,7 @@ Please run codes in the Rmd file before coming to the workshop.
 
 ## Spatial Transcriptomics (Visium)
 
-| Rmd file                                        | Topics                          |
+| Rmd file                                         | Topics                          |
 |:---------                                       |:--------------------------------|
 | [visium_01](visium_01.html)                     | Introduction to data            |   
 |                                                 | Loading data into Seurat object |
