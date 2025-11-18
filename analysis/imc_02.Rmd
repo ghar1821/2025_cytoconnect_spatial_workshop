@@ -1,0 +1,410 @@
+---
+title: "IMC data analysis and visualisation"
+author: "Givanna Putri, Thomas O'neil"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+In this part of IMC data analysis workshop, we will explore some basic visualisation 
+and analysis of IMC data using R.
+
+
+## Load libraries
+
+```{r message=FALSE}
+library(ggplot2)
+library(tidyverse)
+library(here)
+library(viridis)
+library(uwot)
+library(pheatmap)
+
+# set default theme for ggplot
+theme_set(theme_classic())
+
+```
+
+
+## The dataset
+
+The data used for this tutorial is from 35-marker IMC panel on FFPE human intestines.
+The panel is designed to delineate various immune cell subsets and HIV RNA.
+
+The data can be downloaded from [Zenodo](https://zenodo.org/records/10903826?token=eyJhbGciOiJIUzUxMiJ9.eyJpZCI6ImM5NTg0MjRkLTg0YjItNDYxMy1iMWY1LWQ3OTZjNjY4YTFhOCIsImRhdGEiOnt9LCJyYW5kb20iOiJmYTNkNDkyOWFkZGNkMjAwYWRkNGFiYzQzMjM5ZDE1ZCJ9.o_iqj5f3pjQCn7Z0-OKyYSB-DSGMWcI4EF1zzI-lISplpn9-mJzRr9Rz3x2MaFrTvadNn7K7PATLewxaphZ6RA).
+
+The paper describing the data `https://doi.org/10.1002/cyto.a.24847`.
+
+## Loading the data
+
+We will load the csv files containing single cell marker expression segmented using Qupath and ImageJ 
+in the previous analysis step.
+
+```{r}
+data <- read.csv(
+  file.path(here(), "data", "imc", "measurements.csv")
+)
+head(data)
+```
+
+There are a lot of information in the data frames.
+We have columns that describe:
+
+* Centroid of the cells (`Centroid.X.px`, `Centroid.Y.px`)
+* Area of the cells (`Area.px.2`)
+* Mean marker expression (from column 12 onwards)
+* Cell type label for the cell (`Classification`), if you annotated some ROIs manually rather than just setting them all to "Other".
+
+
+The column names are not very user friendly, let's clean them up.
+
+```{r}
+cnames <- colnames(data)
+# remove the rubbish prefixes
+cnames <- gsub("^ROI..1.00.px.per.pixel..", "", cnames)
+# remove the rubbish suffixes
+cnames <- gsub(".tif..Mean" , "", cnames)
+colnames(data) <- cnames
+```
+
+Quick visualisation to check that data acquired properly.
+This is just a scatter plot of cell centroids sized by cell surface area.
+
+```{r}
+ggplot(data, aes(Centroid.X.px, Centroid.Y.px, size=Area.px.2)) + 
+  geom_point()
+```
+
+Quick visualisation of raw marker expression across all cells.
+The code below will first convert the data to long format so we can plot all markers in one go.
+Then we will plot the density of expression for each marker.
+
+```{r}
+# the markers start from column 12 to 48
+# this just grabbed the column names for the markers
+markers_cols <- colnames(data)[12:48]
+
+# convert the data to long format so we can plot all markers in one go
+marker_exp_long <- data %>% 
+  select(all_of(markers_cols), Object.ID) %>%
+  pivot_longer(
+    cols = all_of(markers_cols),
+    names_to = "marker",
+    values_to = "raw_expression"
+  )
+
+# plot the density of expression for each marker
+ggplot(marker_exp_long, aes(x = raw_expression, color = marker, fill = marker)) +
+  geom_density(show.legend = FALSE, alpha = 0.5) + 
+  facet_wrap(~ marker, scales = "free") +
+  labs(
+    title = "Marker expression distributions",
+    x = "Raw marker expression",
+    y = "Density"
+  ) 
+```
+
+## Data normalisation and scaling
+
+We can either use arcsinh or log2 transformation (+1 in case we have 0 value as we can't take log of 0) to
+normalise IMC data.
+Commonly, a co-factor of 1 is used if you are using arcsinh transformation.
+
+We will do both transformation and compare them using density plots.
+
+```{r}
+marker_exp_longer <- marker_exp_long %>%
+  mutate(
+    log2_expression = log2(raw_expression + 1),
+    arcsinh_expression = asinh(raw_expression / 1)
+  ) %>%
+  pivot_longer(
+    cols = c(log2_expression, arcsinh_expression, raw_expression),
+    names_to = "transformation",
+    values_to = "transformed_expression"
+  )
+
+ggplot(marker_exp_longer, aes(x = transformed_expression, color = transformation, fill = transformation)) +
+  geom_density(alpha = 0.3) + 
+  facet_wrap(~ marker, scales = "free") +
+  labs(
+    title = "Comparing marker expression distributions after different transformations",
+    x = "Transformed marker expression",
+    y = "Density"
+  )
+```
+
+Unlike flow cytometry data, most IMC signal intensities don't reach extremely large values.
+Many channels typically sit mostly between 0 and tens, *sometimes* hundreds.
+In this range, arcsinh and log transformations behave quite similarly, because arcsinh is approximately linear for small values,
+and log is only mildly curving in this range.
+
+In some cases, however, the log transformation shifts the distribution to the right while the arcsinh transformation appears to do almost nothing. 
+We see this in channels such as CXCR5, IL17, and Ki67 of our example above.
+This occurs when marker expression is very low across most cells. 
+In this case, arcsinh still behaves linearly and therefore has little effect on the distribution, 
+whereas the log transformation shifts values to the right due to the +1 offset added before taking the logarithm to avoid log(0).
+
+In some cases, e.g., Ecadherin or CD45, we see both transformations exaggerating the bimodal distribution of the marker expression.
+This is because both arcsinh and log transformations compress high values while spreading out low values.
+Weakly separated subtypes which marker expression appear *almost* unimodal will appear more clearly bimodal after transformation.
+This is in keeping with what we do in flow cytometry analysis, where we use arcsinh transformations to deliberately expand the low end of the distribution 
+(while compressing the top end) to better separate dimly positive and negative populations.
+
+For the remainder of this tutorial, we will use just arcsinh transformation for normalisation.
+
+```{r}
+raw_exp <- data %>% select(all_of(markers_cols))
+normed_scaled_exp <- raw_exp %>%
+  mutate(across(all_of(markers_cols), ~ asinh(.x / 1))) %>%  # arcsinh transformation
+  # mutate(across(all_of(markers_cols), ~ log2(.x + 1))) %>%  # log2 transformation
+  mutate(Object.ID = data$Object.ID)
+
+ggplot(normed_scaled_exp %>%
+         pivot_longer(
+           cols = all_of(markers_cols),
+           names_to = "marker",
+           values_to = "normed_expression"
+         ), aes(x = normed_expression, color = marker, fill = marker)) +
+  geom_density(show.legend = FALSE, alpha = 0.5) + 
+  facet_wrap(~ marker, scales = "free") +
+  labs(
+    title = "Marker expression distributions after arcsinh transformation",
+    x = "Normalized marker expression",
+    y = "Density"
+  )
+```
+
+We will also remove cells in the top 0.3% of expression values for each marker as these are likely artefacts or aggregated antibodies.
+
+```{r}
+# Remove cells where ANY marker has extreme high values (top 0.3%)
+normed_exp_filtered <- normed_scaled_exp
+
+thresholds <- lapply(markers_cols, function(marker) {
+  quantile(normed_scaled_exp[[marker]], probs = 0.997)
+})
+names(thresholds) <- markers_cols
+
+# filter the data
+for(marker in markers_cols) {
+  normed_exp_filtered <- normed_exp_filtered %>% 
+    filter(.data[[marker]] <= thresholds[[marker]])
+}
+
+print(paste("Before filtering:", nrow(normed_scaled_exp), ". After filtering:", nrow(normed_exp_filtered)))
+```
+
+Before proceeding, we will also scale the data to have mean of 0 and standard deviation of 1 for each marker.
+
+```{r}
+normed_exp_filtered_scaled <- normed_exp_filtered %>%
+  mutate(across(all_of(markers_cols), ~ scale(.x)))
+
+# plot distribution after normalisation and scaling
+normed_exp_filtered_scaled %>%
+  pivot_longer(
+    cols = all_of(markers_cols),
+    names_to = "marker",
+    values_to = "normed_scaled_expression"
+  ) %>%
+  ggplot(aes(x = normed_scaled_expression, color = marker, fill = marker)) +
+    geom_density(show.legend = FALSE, alpha = 0.5) + 
+    facet_wrap(~ marker, scales = "free") +
+    labs(
+      title = "Marker expression distributions after arcsinh transformation and scaling",
+      x = "Normalized and scaled marker expression",
+      y = "Density"
+    )
+
+```
+
+## Dimensionality reduction and clustering
+
+We can run UMAP and visualise the data in 2D space.
+
+```{r}
+set.seed(123)  # for reproducibility
+cols_to_use <- c("aSMA", "CD14", "CD11c", "CD20", "CD3", "CD31", "CD45", "Ecadherin", "FXIIIa", "Ki67", "Podoplanin")
+
+# Ask TO why PCA is needed?
+# pca_res_df <- prcomp(
+#   normed_scaled_exp %>% select(all_of(cols_to_use)) %>% as.matrix() %>% t()
+# )$rotation %>% as.data.frame()
+
+# # Visualise PCA result
+# ggplot(pca_res_df, aes(PC1,PC2)) + geom_point()
+
+# umap_res <- umap(
+#   pca_res_df %>% select(paste0("PC", seq(1, 10))) %>% as.matrix()
+# ) %>% as.data.frame() %>% 
+#   setNames(c("UMAP1", "UMAP2"))
+
+# the as.matrix converts the data frame to a matrix which umap function requires
+# as.data.frame() converts the output back to a data frame
+# setNames() renames the columns of the data frame to UMAP1 and UMAP2
+umap_res <- umap(
+  normed_exp_filtered_scaled %>% select(all_of(cols_to_use)) %>% as.matrix()
+) %>% as.data.frame() %>% 
+  setNames(c("UMAP1", "UMAP2"))
+```
+
+Use ggplot to visualise the umap plot, coloured by Ecadherin expression.
+
+```{r}
+# add the Ecadherin expression to the umap results for plotting
+umap_res$Ecadherin <- normed_exp_filtered_scaled$Ecadherin
+
+ggplot(umap_res, aes(x=UMAP1, y=UMAP2, color = Ecadherin)) +
+  geom_point() +
+  scale_color_viridis_c(option = "D") +
+  labs(
+    title = "UMAP coloured by Ecadherin expression"
+  )
+```
+
+Run clustering using k-means and visualise is on UMAP plot.
+
+```{r}
+k <- kmeans(normed_exp_filtered_scaled %>% select(all_of(cols_to_use)), centers = 6)
+umap_res <- umap_res %>%
+  mutate(cluster = as.factor(k$cluster))
+
+ggplot(umap_res, aes(x=UMAP1, y=UMAP2, color = cluster)) +
+  geom_point() +  
+  labs(
+    title = "UMAP coloured by k-means clusters"
+  )
+```
+
+Inspect distribution of Ecadherin expression across clusters.
+
+```{r}
+normed_exp_filtered_scaled <- normed_exp_filtered_scaled %>%
+  mutate(cluster = as.factor(k$cluster))
+
+ggplot(normed_exp_filtered_scaled, aes(x=Ecadherin, color=cluster)) +
+  geom_density() +
+  labs(
+    title = "Ecadherin expression distribution across clusters"
+  )
+```
+
+Draw heatmap of mean marker expression per cluster.
+
+```{r}
+normed_exp_filtered_scaled %>%
+  select(all_of(cols_to_use), cluster) %>%
+  group_by(cluster) %>%
+  summarise(across(all_of(cols_to_use), mean)) %>%
+  pivot_longer(cols = all_of(cols_to_use), names_to = "marker", values_to = "value") %>%
+  ggplot(aes(x=cluster, y=marker, fill=value)) + 
+    geom_tile() + 
+    scale_fill_viridis_c(option = "D") +
+    labs(
+      title = "Mean marker expression per cluster"
+    )
+```
+
+Heatmap of marker expression for each cell annotated by cluster.
+
+```{r}
+pheatmap(
+  normed_exp_filtered_scaled %>%
+    arrange(cluster, Object.ID) %>%
+    select(all_of(markers_cols), Object.ID) %>%
+    column_to_rownames("Object.ID") %>%
+    as.matrix(),
+  cluster_rows = FALSE,
+  cluster_cols = TRUE,
+  annotation_row = normed_exp_filtered_scaled %>%
+    arrange(cluster, Object.ID) %>%
+    select(cluster, Object.ID) %>%
+    column_to_rownames("Object.ID"),
+  show_colnames = TRUE,
+  show_rownames = FALSE,
+  main = "Heatmap of marker expression per cell annotated by cluster",
+  color = inferno(100)
+)
+```
+
+Spatial distribution of clusters.
+
+```{r}
+# add the cell spatial information back to the scaled normalised data
+normed_exp_filtered_scaled <- normed_exp_filtered_scaled %>% 
+  mutate(
+    X = data$Centroid.X.px[match(normed_exp_filtered_scaled$Object.ID, data$Object.ID)],
+    Y = data$Centroid.Y.px[match(normed_exp_filtered_scaled$Object.ID, data$Object.ID)],
+    Area = data$Area.px.2[match(normed_exp_filtered_scaled$Object.ID, data$Object.ID)]
+  )
+ggplot(normed_exp_filtered_scaled, aes(X, Y, size=Area, color = cluster)) +
+  geom_point() +
+  scale_color_viridis_d(option = "H") +
+  labs(
+    title = "Spatial distribution of clusters"
+  )
+```
+
+Spatial distribution of marker expression (HIV).
+We use black blackground to accentuate the marker expression.
+
+```{r}
+ggplot(normed_exp_filtered_scaled, aes(X, Y, size=Area, color = HIV)) +
+  geom_point() +
+  scale_color_viridis(option = "inferno") +
+  labs(
+    title = "Spatial distribution of HIV expression"
+  ) + 
+  guides(size = guide_legend(override.aes = list(color = "white"))) +
+  theme(
+    plot.background = element_rect(fill = "black"),
+    panel.background = element_rect(fill = "black"),
+    axis.text = element_text(color = "white"),
+    axis.title = element_text(color = "white"),
+    axis.ticks = element_line(color = "white"),
+    axis.line = element_line(color = "white"),
+    title = element_text(color = "white"),
+    legend.background = element_rect(fill = "black"),
+    legend.text = element_text(color = "white"),
+    legend.title = element_text(color = "white"),
+    
+  )
+
+```
+
+All markers spatial distribution faceted plot.
+
+```{r fig.width=12, fig.height=20}
+normed_exp_filtered_scaled %>% 
+  pivot_longer(cols = all_of(markers_cols), names_to = "marker", values_to = "expression") %>%
+  ggplot(aes(X, Y, size=Area, color = expression)) +
+    geom_point() +
+    scale_color_viridis_c(option = "inferno") +
+    labs(
+      title = "Spatial distribution of marker expressions"
+    ) + 
+    guides(size = guide_legend(override.aes = list(color = "white"))) +
+    facet_wrap(~marker, ncol = 4) +
+    theme(
+      plot.background = element_rect(fill = "black"),
+      axis.text = element_text(color = "white"),
+      axis.title = element_text(color = "white"),
+      axis.ticks = element_line(color = "white"),
+      axis.line = element_line(color = "white"),
+      title = element_text(color = "white"),
+      legend.background = element_rect(fill = "black"),
+      legend.text = element_text(color = "white"),
+      legend.title = element_text(color = "white"),
+      strip.background = element_rect(fill = "black", color = "white"),
+      strip.text = element_text(color = "white"),
+    )
+```
+
+# Session Info
+
+```{r}
+sessionInfo()
+```
