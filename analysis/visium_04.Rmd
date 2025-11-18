@@ -26,7 +26,7 @@ library(spacexr)
 We will be using the Seurat object that we have QCed and normalised in [part 2](visium_02.html).
 
 ```{r}
-dat <- qs_read(file.path(here::here(), "data", "visium", "data", "visium_seurat_qced_norm.qs2"))
+dat <- qs_read(file.path(here::here(), "data", "visium", "extdata", "visium_seurat_qced_norm.qs2"))
 dat
 ```
 
@@ -187,7 +187,7 @@ RCTD <- create.RCTD(
 RCTD <- run.RCTD(RCTD, doublet_mode = "full")
 
 # qsave the object
-qs_save(RCTD, file.path(here::here(), "data", "visium", "data", "rctd_decon_out.qs2"))
+qs_save(RCTD, file.path(here::here(), "data", "visium", "extdata", "rctd_decon_out.qs2"))
 ```
 
 Results of RCTD are stored in `@results`.

@@ -160,7 +160,7 @@ In this example, they are stored in a "data" folder of our current working direc
 
 ```{r}
 dat <- Load10X_Spatial(
-  data.dir = file.path(here::here(), "data", "visium", "raw"),
+  data.dir = file.path(here::here(), "data", "visium", "data"),
   filename = 'Visium_V2_Human_Colon_Cancer_P2_filtered_feature_bc_matrix.h5'
 )
 
@@ -305,11 +305,11 @@ Currently, we have nothing in it.
 So do not be alarmed.
 
 Let's save the object now so we can use it in the subsequent sections.
-We can either save it as an RDS object using `saveRDS(dat, "output/visium/filtered_seurat.qs")` or as a
+We can either save it as an RDS object using `saveRDS(dat, "data/visium/extdata/filtered_seurat.rds")` or as a
 QS object using the [qs2 package](https://cran.r-project.org/web/packages/qs2/vignettes/vignette.html).
 The latter is a lot quicker.
 
 ```{r}
-qs_save(dat, file.path(here::here(), "data", "visium", "data", "visium_seurat.qs2"))
+qs_save(dat, file.path(here::here(), "data", "visium", "extdata", "visium_seurat.qs2"))
 ```
 

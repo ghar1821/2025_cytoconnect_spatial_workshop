@@ -23,7 +23,7 @@ library(scales)
 We will be using the Seurat object that we have QCed and normalised in [part 2](visium_02.html).
 
 ```{r}
-dat <- qs_read(file.path(here::here(), "data", "visium", "data", "visium_seurat_qced_norm.qs2"))
+dat <- qs_read(file.path(here::here(), "data", "visium", "extdata", "visium_seurat_qced_norm.qs2"))
 dat
 ```
 
