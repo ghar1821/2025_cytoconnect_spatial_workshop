@@ -36,6 +36,8 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
 
 <link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
 <!-- Add a small amount of space between sections. -->
@@ -336,11 +338,20 @@ div.tocify {
   <a href="about.html">About</a>
 </li>
 <li>
+  <a href="setup.html">Setup</a>
+</li>
+<li>
   <a href="license.html">License</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop">
+    <span class="fab fa-github"></span>
+     
+    Source code
+  </a>
+</li>
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -380,7 +391,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-10-02
+<strong>Last updated:</strong> 2025-11-19
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -512,13 +523,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrong383f3f1">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomghar18212025cytoconnectspatialworkshoptree0706e91de62463233b153f6de122e03ae3a3efcetargetblank0706e91a">
 <span class="glyphicon glyphicon-ok text-success"
-aria-hidden="true"></span> <strong>Repository version:</strong> 383f3f1
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/tree/0706e91de62463233b153f6de122e03ae3a3efce" target="_blank">0706e91</a>
 </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrong383f3f1"
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomghar18212025cytoconnectspatialworkshoptree0706e91de62463233b153f6de122e03ae3a3efcetargetblank0706e91a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -527,7 +540,8 @@ and connecting the code version to the results is critical for
 reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version 383f3f1.
+The results in this page were generated with repository version
+<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/tree/0706e91de62463233b153f6de122e03ae3a3efce" target="_blank">0706e91</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -543,10 +557,15 @@ were generated:
 <pre><code>
 Ignored files:
     Ignored:    .DS_Store
+    Ignored:    data/.DS_Store
+    Ignored:    data/imc/
+    Ignored:    data/visium/
 
 Untracked files:
-    Untracked:  data/sc_seurat_object_10x.qs
-    Untracked:  data/visium/
+    Untracked:  analysis/IMC Vis.Rmd.old
+
+Unstaged changes:
+    Deleted:    analysis/IMC Vis.Rmd
 
 </code></pre>
 <p>
@@ -596,7 +615,41 @@ Message
 Rmd
 </td>
 <td>
-383f3f1
+<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/blob/0c39273cac0081e4c505f2f1de775fdd86b60ffa/analysis/visium_01.Rmd" target="_blank">0c39273</a>
+</td>
+<td>
+Felix Marsh-Wakefield
+</td>
+<td>
+2025-10-17
+</td>
+<td>
+Update visium_01.Rmd
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/ghar1821/2025_cytoconnect_spatial_workshop/8da421e03dad1419b5f0b88808f6e38c1b1cabcd/docs/visium_01.html" target="_blank">8da421e</a>
+</td>
+<td>
+Givanna Putri
+</td>
+<td>
+2025-10-02
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/blob/383f3f161533e8e8ea4ca2b4cedd0b0274d96001/analysis/visium_01.Rmd" target="_blank">383f3f1</a>
 </td>
 <td>
 Givanna Putri
@@ -773,7 +826,28 @@ stored in a “data” folder of our current working directory.</p>
 <pre class="r"><code>dat &lt;- Load10X_Spatial(
   data.dir = file.path(here::here(), &quot;data&quot;, &quot;visium&quot;, &quot;raw&quot;),
   filename = &#39;Visium_V2_Human_Colon_Cancer_P2_filtered_feature_bc_matrix.h5&#39;
-)</code></pre>
+)
+
+## If the data are provided in folders like &#39;filtered_feature_bc_matrix&#39; and &#39;spatial&#39;, you can use Seurat::Read10X
+# Specify location where the &#39;filtered_feature_bc_matrix&#39; and &#39;spatial&#39; folders are
+
+# Read in matrix data
+# dat &lt;- Seurat::Read10X(&quot;filtered_feature_bc_matrix&quot;)
+# dat &lt;- Seurat::CreateSeuratObject(counts = dat,
+#                                   assay = &quot;Spatial&quot;,
+#                                   project = &quot;dataset&quot;)
+
+# Read in image data
+#https://github.com/satijalab/seurat/issues/5806
+# dat.img &lt;- Seurat::Read10X_Image(&quot;spatial&quot;)
+
+# Correct the image data to match the Seurat object
+# dat.img &lt;- dat.img[Seurat::Cells(dat)]
+# Seurat::DefaultAssay(dat.img) &lt;- Seurat::DefaultAssay(dat)
+
+# Add the image to the object
+# dat[[&quot;slice&quot;]] &lt;- dat.img
+# rm(dat.img)</code></pre>
 </div>
 <div id="inspecting-seurat-object" class="section level2">
 <h2>Inspecting Seurat object</h2>

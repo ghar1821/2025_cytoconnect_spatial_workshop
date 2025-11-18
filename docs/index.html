@@ -261,6 +261,9 @@ $(document).ready(function () {
   <a href="about.html">About</a>
 </li>
 <li>
+  <a href="setup.html">Setup</a>
+</li>
+<li>
   <a href="license.html">License</a>
 </li>
       </ul>
@@ -310,7 +313,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-10-02
+<strong>Last updated:</strong> 2025-11-19
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -358,15 +361,15 @@ results.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomghar18212025cytoconnectspatialworkshoptree859c81878ec9fe2a6ac2e6df1974ea189d4c2ec2targetblank859c818a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomghar18212025cytoconnectspatialworkshoptree0706e91de62463233b153f6de122e03ae3a3efcetargetblank0706e91a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/tree/859c81878ec9fe2a6ac2e6df1974ea189d4c2ec2" target="_blank">859c818</a>
+<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/tree/0706e91de62463233b153f6de122e03ae3a3efce" target="_blank">0706e91</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomghar18212025cytoconnectspatialworkshoptree859c81878ec9fe2a6ac2e6df1974ea189d4c2ec2targetblank859c818a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomghar18212025cytoconnectspatialworkshoptree0706e91de62463233b153f6de122e03ae3a3efcetargetblank0706e91a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -376,7 +379,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/tree/859c81878ec9fe2a6ac2e6df1974ea189d4c2ec2" target="_blank">859c818</a>.
+<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/tree/0706e91de62463233b153f6de122e03ae3a3efce" target="_blank">0706e91</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -392,7 +395,15 @@ were generated:
 <pre><code>
 Ignored files:
     Ignored:    .DS_Store
+    Ignored:    data/.DS_Store
+    Ignored:    data/imc/
     Ignored:    data/visium/
+
+Untracked files:
+    Untracked:  analysis/IMC Vis.Rmd.old
+
+Unstaged changes:
+    Deleted:    analysis/IMC Vis.Rmd
 
 </code></pre>
 <p>
@@ -436,6 +447,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/blob/0706e91de62463233b153f6de122e03ae3a3efce/analysis/index.Rmd" target="_blank">0706e91</a>
+</td>
+<td>
+Givanna Putri
+</td>
+<td>
+2025-11-19
+</td>
+<td>
+wflow_publish(c("analysis/imc_02.Rmd", "analysis/visium_01.Rmd",
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/ghar1821/2025_cytoconnect_spatial_workshop/e3583d7f5ade8119533da08f0863c7c6948b8fbb/docs/index.html" target="_blank">e3583d7</a>
+</td>
+<td>
+Givanna Putri
+</td>
+<td>
+2025-10-02
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -544,8 +589,8 @@ https://doi.org/10.1038/s41588-025-02193-3</code></pre>
 </table>
 <p>Please run codes in the Rmd file before coming to the workshop.</p>
 </div>
-<div id="visium" class="section level2">
-<h2>Visium</h2>
+<div id="spatial-transcriptomics-visium" class="section level2">
+<h2>Spatial Transcriptomics (Visium)</h2>
 <table>
 <colgroup>
 <col width="23%" />
@@ -559,7 +604,7 @@ https://doi.org/10.1038/s41588-025-02193-3</code></pre>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left"><a href="visium_01.html">visium_01</a> ~ 10 mins</td>
+<td align="left"><a href="visium_01.html">visium_01</a></td>
 <td align="left">Introduction to data</td>
 </tr>
 <tr class="even">
@@ -575,7 +620,7 @@ https://doi.org/10.1038/s41588-025-02193-3</code></pre>
 <td align="left"></td>
 </tr>
 <tr class="odd">
-<td align="left"><a href="visium_02.html">visium_02</a> ~ 10 mins</td>
+<td align="left"><a href="visium_02.html">visium_02</a></td>
 <td align="left">QC and Normalisation</td>
 </tr>
 <tr class="even">
@@ -583,7 +628,7 @@ https://doi.org/10.1038/s41588-025-02193-3</code></pre>
 <td align="left"></td>
 </tr>
 <tr class="odd">
-<td align="left"><a href="visium_03.html">visium_03</a> ~ 15 mins</td>
+<td align="left"><a href="visium_03.html">visium_03</a></td>
 <td align="left">Visualising spatial data</td>
 </tr>
 <tr class="even">
@@ -591,8 +636,8 @@ https://doi.org/10.1038/s41588-025-02193-3</code></pre>
 <td align="left"></td>
 </tr>
 <tr class="odd">
-<td align="left"><a href="visium_04.html">visium_04</a> ~ 20 mins</td>
-<td align="left">Module score</td>
+<td align="left"><a href="visium_04.html">visium_04</a></td>
+<td align="left">Module scoring</td>
 </tr>
 <tr class="even">
 <td align="left"></td>
@@ -610,13 +655,34 @@ https://doi.org/10.1038/s41588-025-02193-3</code></pre>
 <td align="left"></td>
 <td align="left"></td>
 </tr>
+</tbody>
+</table>
+</div>
+<div id="imaging-mass-cytometry-imc" class="section level2">
+<h2>Imaging Mass Cytometry (IMC)</h2>
+<table>
+<colgroup>
+<col width="20%" />
+<col width="80%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Rmd file</th>
+<th align="left">Topics</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><a href="imc_01.html">imc_01</a></td>
+<td align="left">Segmentation using ImageJ and Mesmer</td>
+</tr>
 <tr class="even">
-<td align="left">NA ~ 60 mins</td>
-<td align="left">Practice time</td>
+<td align="left"></td>
+<td align="left">Loading and visualising data in Qupath</td>
 </tr>
 <tr class="odd">
-<td align="left">NA ~ 30 mins</td>
-<td align="left">Open discussion</td>
+<td align="left"><a href="imc_02.html">imc_02</a></td>
+<td align="left">Basic downstream analysis using R</td>
 </tr>
 </tbody>
 </table>
