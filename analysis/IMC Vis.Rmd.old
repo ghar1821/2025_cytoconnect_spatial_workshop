@@ -15,7 +15,7 @@ getwd()
 ```
 
 ```{r}
-data <- read.csv("../data/measurements (1).csv")
+data <- read.csv("data/imc/measurements.csv")
 theme_set(theme_classic())
 cnames <- colnames(data)
 head(data)
