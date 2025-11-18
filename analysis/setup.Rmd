@@ -9,19 +9,81 @@ editor_options:
 
 Please ensure you follow the instructions below **prior** to attending the workshop.
 
-You can either create a new R script and copy paste the content of the code blocks
-or download [this Rmd file](https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/blob/master/analysis/setup.Rmd)
-and run each code block step by step.
+## Data download
 
-***Do not just blindly run the code! Make sure you read the description above each
-of the code block to understand what the code is doing before running them!***
-Sourcing the entire Rmd file will not run anything as every code block has been 
-deliberately annotated such that they won't execute when the whole file is sourced.
+Data for all the workshop exercises can be downloaded from OneDrive at this link: https://wehieduau-my.sharepoint.com/:f:/g/personal/putri_g_wehi_edu_au/IgDBDuhSSGbgTIDtq8Q1S9kIASL6kAVgwT0HbZ-JtQrAlwk?e=K50aHf.
 
+Create a folder somewhere on your computer (e.g. 
+`C:/2025_cytoconnect_spatial_workshop/` or `/Users/yourname/2025_cytoconnect_spatial_workshop/`
+) to store all the files related for this workhop.
+Create a `data` folder within it and download all the data files into that folder.
+
+## Software installation
+
+You need to download the following softwares and install them on your computer prior to the workshop:
+- Qupath 0.6.0: https://qupath.readthedocs.io/en/stable/index.html
+- ImageJ: https://imagej.net/ij/
+- DeepCell ImageJ plugin: https://github.com/vanvalenlab/kiosk-imageJ-plugin
+- R: https://www.r-project.org/
+- RStudio: https://posit.co/download/rstudio-desktop/
+
+After installing R and RStudio, please install the required R packages.
+You can do this by running the code blocks below in RStudio.
+
+Please install the packages that we will be using in the workshop by running
+the code block below.
+
+```{r, eval=FALSE}
+
+cran_packages <- c(
+  "Seurat", "ggplot2", "scales", "patchwork", "qs2",
+  "viridis", "pak", "here", "tidyverse", "uwot", "pheatmap"
+)
+
+install.packages(cran_packages)
+
+# RCTD only available on Github
+pak::pkg_install("dmcable/spacexr")
+
+bioc_packages <- c()
+if(length(bioc_packages) > 0) {BiocManager::install(bioc_packages)}
+
+```
+
+Running this chunk will let you know if the packages have been installed properly. 
+
+```{r eval=FALSE}
+checkSetup <- function() {
+  library(cli)
+  cat("\n--------------------------------------\n")
+  cat(style_bold(col_magenta("\n***Installing General Packages***\n\n")))
+  not <- c(); not2 <- c()
+  packages1 <- c(cran_packages, bioc_packages)#, "Test")
+  for (i in 1:length(packages1)){
+    if(requireNamespace(packages1[i], quietly = TRUE)==F) {
+      cat(paste(style_bold(col_red(packages1[i])), "has not been installed\n"))
+      not <- c(not,i)
+    } else {
+      suppressWarnings(suppressMessages(library(as.character(packages1[i]), character.only = TRUE)))
+      cat(col_yellow(packages1[i]), "is loaded!\n")
+    }
+  }
+  cat("\n--------------------------------------\n")
+  if (length(not) > 0){
+    cat(style_bold(bg_red("\n  **IMPORTANT**  ")),
+        style_bold(col_yellow("\n\nYou need to install: \n")),
+        paste(paste(c(packages1[not]), collapse=", ")),
+        "\n\n--------------------------------------",
+        "\n\n Use:\n - install.packages(),\n - BiocManager::install() or, \n - use Google to find installation instructions.\n\n", style_bold(col_green("Then run this function again!\n\n")))
+  } else {
+    cat("",col_green(style_bold("\n All packages are loaded!\n\n Happy Coding! :)\n\n")))
+  }
+}
+checkSetup()
+```
 
 If you have any problems, please reach out to either:
 
-- [Felix Marsh-Wakefield](mailto:felix.marsh-wakefield@sydney.edu.au)
 - [Thomas O'Neil](mailto:thomas.oneil@sydney.edu.au)
 - [Givanna Putri](mailto:putri.g@wehi.edu.au)
 
