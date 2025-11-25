@@ -18,6 +18,9 @@ Create a folder somewhere on your computer (e.g.
 ) to store all the files related for this workhop.
 Create a `data` folder within it and download all the data files into that folder.
 
+Afterwards, under the `visium` folder, create a new folder called `extdata`. 
+We will use this folder to store all the intermediate analysis files we generate during the workshop.
+
 Your folder structure should look like this:
 ```
 2025_cytoconnect_spatial_workshop/
@@ -32,11 +35,12 @@ Your folder structure should look like this:
     │           └── ...
     │
     └── visium
-        ├── sc_seurat_object_10x.qs2
+        ├── extdata
         ├── spatial
         │   ├── aligned_fiducials.jpg
         │   ├── aligned_tissue_image.jpg
         │   └── ...
+        ├── sc_seurat_object_10x.qs2
         ├── spots_to_remove_v2.csv
         └── Visium_V2_Human_Colon_Cancer_P2_filtered_feature_bc_matrix.h5
 ```
