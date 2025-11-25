@@ -143,7 +143,7 @@ visium data.
 
 ```{r fig.dim=c(15, 10)}
 # Download from onedrive
-sc_data <- qs_read(file.path(here::here(), "data", "visium", "data", "sc_seurat_object_10x.qs2"))
+sc_data <- qs_read(file.path(here::here(), "data", "visium", "sc_seurat_object_10x.qs2"))
 DimPlot(sc_data, reduction = "umap", group.by = c("Level1", "Level2", "Patient"), ncol=2)
 ```
 
