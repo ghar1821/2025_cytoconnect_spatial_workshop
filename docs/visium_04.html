@@ -391,7 +391,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-11-19
+<strong>Last updated:</strong> 2025-11-25
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -523,15 +523,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomghar18212025cytoconnectspatialworkshoptreecf4dc7cd43be2dd08fcda3449f20c98274e4fb76targetblankcf4dc7ca">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomghar18212025cytoconnectspatialworkshoptree2b79564fc3392ca84e0f2f98b99de9bd4bcc2641targetblank2b79564a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/tree/cf4dc7cd43be2dd08fcda3449f20c98274e4fb76" target="_blank">cf4dc7c</a>
+<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/tree/2b79564fc3392ca84e0f2f98b99de9bd4bcc2641" target="_blank">2b79564</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomghar18212025cytoconnectspatialworkshoptreecf4dc7cd43be2dd08fcda3449f20c98274e4fb76targetblankcf4dc7ca"
+id="strongRepositoryversionstrongahrefhttpsgithubcomghar18212025cytoconnectspatialworkshoptree2b79564fc3392ca84e0f2f98b99de9bd4bcc2641targetblank2b79564a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -541,7 +541,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/tree/cf4dc7cd43be2dd08fcda3449f20c98274e4fb76" target="_blank">cf4dc7c</a>.
+<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/tree/2b79564fc3392ca84e0f2f98b99de9bd4bcc2641" target="_blank">2b79564</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -560,6 +560,12 @@ Ignored files:
     Ignored:    data/.DS_Store
     Ignored:    data/imc/
     Ignored:    data/visium/
+
+Untracked files:
+    Untracked:  analysis/imc_01.Rmd
+
+Unstaged changes:
+    Modified:   analysis/imc_02.Rmd
 
 </code></pre>
 <p>
@@ -604,6 +610,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/blob/2b79564fc3392ca84e0f2f98b99de9bd4bcc2641/analysis/visium_04.Rmd" target="_blank">2b79564</a>
+</td>
+<td>
+Givanna Putri
+</td>
+<td>
+2025-11-25
+</td>
+<td>
+wflow_publish("analysis/visium_04.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/ghar1821/2025_cytoconnect_spatial_workshop/fcba5571a53451709f861f3993757347a7f756f5/docs/visium_04.html" target="_blank">fcba557</a>
+</td>
+<td>
+Givanna Putri
+</td>
+<td>
+2025-11-19
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -945,7 +985,7 @@ href="https://github.com/dmcable/spacexr">spacexr package</a>. For the
 reference scRNAseq data, we will use one of the scRNAseq data that
 accompanies the visium data.</p>
 <pre class="r"><code># Download from onedrive
-sc_data &lt;- qs_read(file.path(here::here(), &quot;data&quot;, &quot;visium&quot;, &quot;data&quot;, &quot;sc_seurat_object_10x.qs2&quot;))
+sc_data &lt;- qs_read(file.path(here::here(), &quot;data&quot;, &quot;visium&quot;, &quot;sc_seurat_object_10x.qs2&quot;))
 DimPlot(sc_data, reduction = &quot;umap&quot;, group.by = c(&quot;Level1&quot;, &quot;Level2&quot;, &quot;Patient&quot;), ncol=2)</code></pre>
 <pre><code>Rasterizing points since number of points exceeds 100,000.
 To disable this behavior set `raster=FALSE`
@@ -1176,21 +1216,21 @@ types:</p>
 <pre><code>Warning: The default method for RunUMAP has changed from calling Python UMAP via reticulate to the R-native UWOT using the cosine metric
 To use Python UMAP via reticulate, set umap.method to &#39;umap-learn&#39; and metric to &#39;correlation&#39;
 This message will be shown once per session</code></pre>
-<pre><code>02:39:20 UMAP embedding parameters a = 0.9922 b = 1.112</code></pre>
-<pre><code>02:39:20 Read 3959 rows and found 10 numeric columns</code></pre>
-<pre><code>02:39:20 Using Annoy for neighbor search, n_neighbors = 30</code></pre>
-<pre><code>02:39:20 Building Annoy index with metric = cosine, n_trees = 50</code></pre>
+<pre><code>14:57:42 UMAP embedding parameters a = 0.9922 b = 1.112</code></pre>
+<pre><code>14:57:42 Read 3959 rows and found 10 numeric columns</code></pre>
+<pre><code>14:57:42 Using Annoy for neighbor search, n_neighbors = 30</code></pre>
+<pre><code>14:57:42 Building Annoy index with metric = cosine, n_trees = 50</code></pre>
 <pre><code>0%   10   20   30   40   50   60   70   80   90   100%</code></pre>
 <pre><code>[----|----|----|----|----|----|----|----|----|----|</code></pre>
 <pre><code>**************************************************|
-02:39:20 Writing NN index file to temp file /var/folders/7q/lqx0fzgn1zqfmlc5tx1c0n0r0004z0/T//RtmpaNymEm/file180bc49098085
-02:39:20 Searching Annoy index using 1 thread, search_k = 3000
-02:39:21 Annoy recall = 100%
-02:39:21 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
-02:39:22 Initializing from normalized Laplacian + noise (using RSpectra)
-02:39:22 Commencing optimization for 500 epochs, with 152786 positive edges
-02:39:22 Using rng type: pcg
-02:39:24 Optimization finished</code></pre>
+14:57:42 Writing NN index file to temp file /var/folders/7q/lqx0fzgn1zqfmlc5tx1c0n0r0004z0/T//RtmpAsm4D8/filebb6c5e5aa0cc
+14:57:42 Searching Annoy index using 1 thread, search_k = 3000
+14:57:43 Annoy recall = 100%
+14:57:43 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
+14:57:43 Initializing from normalized Laplacian + noise (using RSpectra)
+14:57:43 Commencing optimization for 500 epochs, with 152786 positive edges
+14:57:43 Using rng type: pcg
+14:57:46 Optimization finished</code></pre>
 <pre class="r"><code>FeaturePlot(dat, features = colnames(norm_weights))</code></pre>
 <pre><code>Warning: The `slot` argument of `FetchData()` is deprecated as of SeuratObject 5.0.0.
 ℹ Please use the `layer` argument instead.
@@ -1617,6 +1657,43 @@ biological processes are commonly associated with those genes. There are
 many softwares to do this, <a
 href="https://metascape.org/">Metascape</a> is one of them.</p>
 <p><img src="assets/visium_metascape_go.png" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-visium_metascape_go">
+Past versions of visium_metascape_go.png
+</button>
+</p>
+<div id="fig-visium_metascape_go" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/blob/e1d4a94ce483116106ed8f9fa00b9a26dd705208/docs/assets/visium_metascape_go.png" target="_blank">e1d4a94</a>
+</td>
+<td>
+Givanna Putri
+</td>
+<td>
+2025-11-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <div id="visual-inferrence-of-cell-cell-communications"
 class="section level3">
 <h3>Visual inferrence of cell-cell communications</h3>
