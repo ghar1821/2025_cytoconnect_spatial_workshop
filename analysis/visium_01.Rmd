@@ -24,8 +24,8 @@ library(qs2)
 The data used for this tutorial is an FFPE tissue from a patient with colorectal cancer.
 It is described in a bioRxiv paper: https://doi.org/10.1101/2024.06.04.597233
 
-The data can be downloaded from [here](https://www.10xgenomics.com/products/visium-hd-spatial-gene-expression/dataset-human-crc).
-Choose Visium CytAssist v2 Sample P2 CRC on the tab on the left.
+The data can be downloaded from Google drive link in setup page or from [10x website](https://www.10xgenomics.com/products/visium-hd-spatial-gene-expression/dataset-human-crc).
+If you choose to do the latter, make sure you choose Visium CytAssist v2 Sample P2 CRC on the tab on the left.
 
 ## Obtaining the spot x gene matrix
 
@@ -160,31 +160,9 @@ In this example, they are stored in a "data" folder of our current working direc
 
 ```{r}
 dat <- Load10X_Spatial(
-  data.dir = file.path(here::here(), "data", "visium", "data"),
+  data.dir = file.path(here::here(), "data", "visium"),
   filename = 'Visium_V2_Human_Colon_Cancer_P2_filtered_feature_bc_matrix.h5'
 )
-
-## If the data are provided in folders like 'filtered_feature_bc_matrix' and 'spatial', you can use Seurat::Read10X
-# Specify location where the 'filtered_feature_bc_matrix' and 'spatial' folders are
-
-# Read in matrix data
-# dat <- Seurat::Read10X("filtered_feature_bc_matrix")
-# dat <- Seurat::CreateSeuratObject(counts = dat,
-#                                   assay = "Spatial",
-#                                   project = "dataset")
-
-# Read in image data
-#https://github.com/satijalab/seurat/issues/5806
-# dat.img <- Seurat::Read10X_Image("spatial")
-
-# Correct the image data to match the Seurat object
-# dat.img <- dat.img[Seurat::Cells(dat)]
-# Seurat::DefaultAssay(dat.img) <- Seurat::DefaultAssay(dat)
-
-# Add the image to the object
-# dat[["slice"]] <- dat.img
-# rm(dat.img)
-
 ```
 
 ## Inspecting Seurat object
