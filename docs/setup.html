@@ -393,7 +393,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-11-19
+<strong>Last updated:</strong> 2025-11-25
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -525,15 +525,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomghar18212025cytoconnectspatialworkshoptree67ff5c7be9924aaa8655e9d8ce86f100c8ec7293targetblank67ff5c7a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomghar18212025cytoconnectspatialworkshoptree59bf1e23e94ddeeae5f05fd04703df00b42a88e1targetblank59bf1e2a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/tree/67ff5c7be9924aaa8655e9d8ce86f100c8ec7293" target="_blank">67ff5c7</a>
+<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/tree/59bf1e23e94ddeeae5f05fd04703df00b42a88e1" target="_blank">59bf1e2</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomghar18212025cytoconnectspatialworkshoptree67ff5c7be9924aaa8655e9d8ce86f100c8ec7293targetblank67ff5c7a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomghar18212025cytoconnectspatialworkshoptree59bf1e23e94ddeeae5f05fd04703df00b42a88e1targetblank59bf1e2a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -543,7 +543,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/tree/67ff5c7be9924aaa8655e9d8ce86f100c8ec7293" target="_blank">67ff5c7</a>.
+<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/tree/59bf1e23e94ddeeae5f05fd04703df00b42a88e1" target="_blank">59bf1e2</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -610,6 +610,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/blob/59bf1e23e94ddeeae5f05fd04703df00b42a88e1/analysis/setup.Rmd" target="_blank">59bf1e2</a>
+</td>
+<td>
+Givanna Putri
+</td>
+<td>
+2025-11-25
+</td>
+<td>
+wflow_publish("analysis/setup.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/ghar1821/2025_cytoconnect_spatial_workshop/81d0902e2434cd834d266ef97afd8783ab24496a/docs/setup.html" target="_blank">81d0902</a>
+</td>
+<td>
+Givanna Putri
+</td>
+<td>
+2025-11-19
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/blob/67ff5c7be9924aaa8655e9d8ce86f100c8ec7293/analysis/setup.Rmd" target="_blank">67ff5c7</a>
 </td>
 <td>
@@ -669,28 +703,52 @@ First publish for website
 <h2>Data download</h2>
 <p>Data for all the workshop exercises can be downloaded from OneDrive
 at this link: <a
-href="https://wehieduau-my.sharepoint.com/:f:/g/personal/putri_g_wehi_edu_au/IgDBDuhSSGbgTIDtq8Q1S9kIASL6kAVgwT0HbZ-JtQrAlwk?e=K50aHf"
-class="uri">https://wehieduau-my.sharepoint.com/:f:/g/personal/putri_g_wehi_edu_au/IgDBDuhSSGbgTIDtq8Q1S9kIASL6kAVgwT0HbZ-JtQrAlwk?e=K50aHf</a>.</p>
+href="https://drive.google.com/drive/folders/1iEmdlpQ_CT4tK9N2vTfpg4CwxaG1djAT"
+class="uri">https://drive.google.com/drive/folders/1iEmdlpQ_CT4tK9N2vTfpg4CwxaG1djAT</a>.</p>
 <p>Create a folder somewhere on your computer (e.g. 
 <code>C:/2025_cytoconnect_spatial_workshop/</code> or
 <code>/Users/yourname/2025_cytoconnect_spatial_workshop/</code> ) to
 store all the files related for this workhop. Create a <code>data</code>
 folder within it and download all the data files into that folder.</p>
+<p>Your folder structure should look like this:</p>
+<pre><code>2025_cytoconnect_spatial_workshop/
+└── data
+    ├── imc
+    │   ├── measurements.csv
+    │   └── tif_files
+    │       └── originalimages
+    │           ├── aSMA.tif
+    │           ├── Axl.tif
+    │           ├── CCR6.tif
+    │           └── ...
+    │
+    └── visium
+        ├── sc_seurat_object_10x.qs2
+        ├── spatial
+        │   ├── aligned_fiducials.jpg
+        │   ├── aligned_tissue_image.jpg
+        │   └── ...
+        ├── spots_to_remove_v2.csv
+        └── Visium_V2_Human_Colon_Cancer_P2_filtered_feature_bc_matrix.h5</code></pre>
 </div>
 <div id="software-installation" class="section level2">
 <h2>Software installation</h2>
 <p>You need to download the following softwares and install them on your
-computer prior to the workshop: - Qupath 0.6.0: <a
+computer prior to the workshop:</p>
+<ul>
+<li>Qupath 0.6.0: <a
 href="https://qupath.readthedocs.io/en/stable/index.html"
-class="uri">https://qupath.readthedocs.io/en/stable/index.html</a> -
-ImageJ: <a href="https://imagej.net/ij/"
-class="uri">https://imagej.net/ij/</a> - DeepCell ImageJ plugin: <a
+class="uri">https://qupath.readthedocs.io/en/stable/index.html</a></li>
+<li>ImageJ: <a href="https://imagej.net/ij/"
+class="uri">https://imagej.net/ij/</a></li>
+<li>DeepCell ImageJ plugin: <a
 href="https://github.com/vanvalenlab/kiosk-imageJ-plugin"
-class="uri">https://github.com/vanvalenlab/kiosk-imageJ-plugin</a> - R:
-<a href="https://www.r-project.org/"
-class="uri">https://www.r-project.org/</a> - RStudio: <a
-href="https://posit.co/download/rstudio-desktop/"
-class="uri">https://posit.co/download/rstudio-desktop/</a></p>
+class="uri">https://github.com/vanvalenlab/kiosk-imageJ-plugin</a></li>
+<li>R: <a href="https://www.r-project.org/"
+class="uri">https://www.r-project.org/</a></li>
+<li>RStudio: <a href="https://posit.co/download/rstudio-desktop/"
+class="uri">https://posit.co/download/rstudio-desktop/</a></li>
+</ul>
 <p>After installing R and RStudio, please install the required R
 packages. You can do this by running the code blocks below in
 RStudio.</p>
@@ -742,152 +800,6 @@ checkSetup()</code></pre>
 <li><a href="mailto:thomas.oneil@sydney.edu.au">Thomas O’Neil</a></li>
 <li><a href="mailto:putri.g@wehi.edu.au">Givanna Putri</a></li>
 </ul>
-</div>
-<div id="packages" class="section level2">
-<h2>Packages</h2>
-<p>Please install the packages that we will be using in the workshop by
-running the code block below.</p>
-<pre class="r"><code>cran_packages &lt;- c(
-  &quot;BiocManager&quot;, &quot;Seurat&quot;, &quot;ggplot2&quot;, &quot;scales&quot;, &quot;patchwork&quot;, &quot;qs2&quot;,
-  &quot;viridis&quot;, &quot;pak&quot;, &quot;here&quot;, &quot;hdf5r&quot;, &quot;Rfast2&quot;
-)
-
-install.packages(cran_packages)
-
-# RCTD only available on Github
-pak::pkg_install(&quot;dmcable/spacexr&quot;)
-
-bioc_packages &lt;- c()
-if(length(bioc_packages) &gt; 0) {BiocManager::install(bioc_packages)}</code></pre>
-<p>Running this chunk will let you know if the packages have been
-installed properly.</p>
-<pre class="r"><code>checkSetup &lt;- function() {
-  library(cli)
-  cat(&quot;\n--------------------------------------\n&quot;)
-  cat(style_bold(col_magenta(&quot;\n***Installing General Packages***\n\n&quot;)))
-  not &lt;- c(); not2 &lt;- c()
-  packages1 &lt;- c(cran_packages, bioc_packages)#, &quot;Test&quot;)
-  for (i in 1:length(packages1)){
-    if(requireNamespace(packages1[i], quietly = TRUE)==F) {
-      cat(paste(style_bold(col_red(packages1[i])), &quot;has not been installed\n&quot;))
-      not &lt;- c(not,i)
-    } else {
-      suppressWarnings(suppressMessages(library(as.character(packages1[i]), character.only = TRUE)))
-      cat(col_yellow(packages1[i]), &quot;is loaded!\n&quot;)
-    }
-  }
-  cat(&quot;\n--------------------------------------\n&quot;)
-  if (length(not) &gt; 0){
-    cat(style_bold(bg_red(&quot;\n  **IMPORTANT**  &quot;)),
-        style_bold(col_yellow(&quot;\n\nYou need to install: \n&quot;)),
-        paste(paste(c(packages1[not]), collapse=&quot;, &quot;)),
-        &quot;\n\n--------------------------------------&quot;,
-        &quot;\n\n Use:\n - install.packages(),\n - BiocManager::install() or, \n - use Google to find installation instructions.\n\n&quot;, style_bold(col_green(&quot;Then run this function again!\n\n&quot;)))
-  } else {
-    cat(&quot;&quot;,col_green(style_bold(&quot;\n All packages are loaded!\n\n Happy Coding! :)\n\n&quot;)))
-  }
-}
-checkSetup()</code></pre>
-</div>
-<div id="folder-structure" class="section level2">
-<h2>Folder structure</h2>
-<p>The code block below will create a bunch of folders in the location
-where this script is stored.</p>
-<pre class="r"><code># This sets the working directory for all subsequent code chunks to be run
-# to the location of this file.
-
-raw_data_dir &lt;- file.path(here::here(), &quot;data&quot;, &quot;visium&quot;, &quot;raw&quot;)
-data_dir &lt;- file.path(here::here(), &quot;data&quot;, &quot;visium&quot;, &quot;data&quot;)
-
-if(!dir.exists(raw_data_dir)){dir.create(raw_data_dir, recursive = TRUE)}
-if(!dir.exists(data_dir)){dir.create(data_dir, recursive = TRUE)}</code></pre>
-</div>
-<div id="data-download-1" class="section level2 tabset">
-<h2 class="tabset">Data Download</h2>
-<p>Please source the code block below to load a function to check the
-integrity of the downloaded files.</p>
-<pre class="r"><code>check_md5 &lt;- function(files_expected_md5sum) {
-    # files_expected_md5sum must be a named vector where the name is the path to the file
-    # and the value is the expected md5sum
-    library(cli)
-    library(tools)
-    
-    error &lt;- combine_ansi_styles(&quot;red&quot;, &quot;bold&quot;)
-    
-    need_redownload &lt;- FALSE
-    for (filename in names(files_expected_md5sum)) {
-        actual_md5sum &lt;- md5sum(filename)
-        expected_md5sum &lt;- files_expected_md5sum[filename]
-        if (actual_md5sum != expected_md5sum) {
-            cat(error(paste(
-                filename, &quot;is corrupted. Actual md5sum:&quot;, actual_md5sum, &quot;!= Expected md5sum:&quot;, expected_md5sum, &quot;\n&quot;
-                )
-            ))
-            
-            need_redownload &lt;- TRUE
-        }
-    }
-    if (need_redownload) {
-        cat(error(&quot;Some files are corrupted. Please redownload&quot;))
-    }
-}</code></pre>
-<p><strong><em>Note</em></strong>: if you encounter a timeout error
-(after 60 seconds) while downloading the files, you can increase the
-timeout to say 6,000 seconds to give R more time to download the files
-by running
-<code>options(timeout = max(6000, getOption("timeout")))</code></p>
-<div id="visium" class="section level3">
-<h3>Visium</h3>
-<p>The code block below will download the count matrix and spatial
-information required to load the Visium data in.</p>
-<pre class="r"><code>download.file(&quot;https://cf.10xgenomics.com/samples/spatial-exp/3.0.0/Visium_V2_Human_Colon_Cancer_P2/Visium_V2_Human_Colon_Cancer_P2_filtered_feature_bc_matrix.h5&quot;, 
-              destfile = file.path(raw_data_dir, &quot;Visium_V2_Human_Colon_Cancer_P2_filtered_feature_bc_matrix.h5&quot;), 
-              method = &quot;curl&quot;)
-
-
-download.file(&quot;https://cf.10xgenomics.com/samples/spatial-exp/3.0.0/Visium_V2_Human_Colon_Cancer_P2/Visium_V2_Human_Colon_Cancer_P2_spatial.tar.gz&quot;, 
-              destfile = file.path(raw_data_dir, &quot;spatial.tar.gz&quot;), 
-              method = &quot;curl&quot;)</code></pre>
-<p>The code below will check the integrity of the downloaded files. If
-you get any red warning, please re-download the files that were found to
-be corrupted using the code block above.</p>
-<pre class="r"><code># check md5sum of the downloaded files.
-md5sum_str &lt;- c(
-    &quot;0a9733cf0dfd3dfaa3b6c1c5c24bcbed&quot;,
-    &quot;a32edc825ab7089fca7848fc80cd5113&quot;
-)
-names(md5sum_str) &lt;- c(
-    file.path(raw_data_dir, &quot;Visium_V2_Human_Colon_Cancer_P2_filtered_feature_bc_matrix.h5&quot;),
-    file.path(raw_data_dir, &quot;spatial.tar.gz&quot;)
-)
-check_md5(md5sum_str)</code></pre>
-<p>If there are no warning from the code block above, proceed to untar
-the <code>spatial.tar.gz</code> file using the code block below.</p>
-<pre class="r"><code>untar(file.path(raw_data_dir, &quot;spatial.tar.gz&quot;), exdir = raw_data_dir)</code></pre>
-<div id="sc-reference-data" class="section level4">
-<h4>SC reference data</h4>
-<p>TODO. Need to upload the qs2 file somewhere they can download.</p>
-</div>
-<div id="optional-loupe-browser-file" class="section level4">
-<h4>Optional loupe browser file</h4>
-<p>The following file is optional and is only required if you would like
-to try out the demo we will be showing on how to use loupe browser to
-make some QC step simpler.</p>
-<pre class="r"><code>download.file(
-    &quot;https://cf.10xgenomics.com/samples/spatial-exp/3.0.0/Visium_V2_Human_Colon_Cancer_P2/Visium_V2_Human_Colon_Cancer_P2_cloupe.cloupe&quot;,
-    destfile = file.path(raw_data_dir, &quot;Visium_V2_Human_Colon_Cancer_P2_cloupe.cloupe&quot;),
-    method = &quot;curl&quot;
-)
-md5sum_str &lt;- c(&quot;c5726e203c21a2fc3432831ea7c74252&quot;)
-names(md5sum_str) &lt;- c(
-    file.path(raw_data_dir, &quot;Visium_V2_Human_Colon_Cancer_P2_cloupe.cloupe&quot;)
-)
-check_md5(md5sum_str)</code></pre>
-<p>Install Loupe Browser at this link: <a
-href="https://www.10xgenomics.com/support/software/loupe-browser/latest"
-class="uri">https://www.10xgenomics.com/support/software/loupe-browser/latest</a></p>
-</div>
-</div>
 </div>
 <div id="session-info" class="section level2">
 <h2>Session Info</h2>
