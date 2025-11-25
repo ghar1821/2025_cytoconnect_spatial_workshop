@@ -11,16 +11,41 @@ Please ensure you follow the instructions below **prior** to attending the works
 
 ## Data download
 
-Data for all the workshop exercises can be downloaded from OneDrive at this link: https://wehieduau-my.sharepoint.com/:f:/g/personal/putri_g_wehi_edu_au/IgDBDuhSSGbgTIDtq8Q1S9kIASL6kAVgwT0HbZ-JtQrAlwk?e=K50aHf.
+Data for all the workshop exercises can be downloaded from OneDrive at this link: https://drive.google.com/drive/folders/1iEmdlpQ_CT4tK9N2vTfpg4CwxaG1djAT.
 
 Create a folder somewhere on your computer (e.g. 
 `C:/2025_cytoconnect_spatial_workshop/` or `/Users/yourname/2025_cytoconnect_spatial_workshop/`
 ) to store all the files related for this workhop.
 Create a `data` folder within it and download all the data files into that folder.
 
+Your folder structure should look like this:
+```
+2025_cytoconnect_spatial_workshop/
+└── data
+    ├── imc
+    │   ├── measurements.csv
+    │   └── tif_files
+    │       └── originalimages
+    │           ├── aSMA.tif
+    │           ├── Axl.tif
+    │           ├── CCR6.tif
+    │           └── ...
+    │
+    └── visium
+        ├── sc_seurat_object_10x.qs2
+        ├── spatial
+        │   ├── aligned_fiducials.jpg
+        │   ├── aligned_tissue_image.jpg
+        │   └── ...
+        ├── spots_to_remove_v2.csv
+        └── Visium_V2_Human_Colon_Cancer_P2_filtered_feature_bc_matrix.h5
+```
+
+
 ## Software installation
 
 You need to download the following softwares and install them on your computer prior to the workshop:
+
 - Qupath 0.6.0: https://qupath.readthedocs.io/en/stable/index.html
 - ImageJ: https://imagej.net/ij/
 - DeepCell ImageJ plugin: https://github.com/vanvalenlab/kiosk-imageJ-plugin
@@ -86,180 +111,6 @@ If you have any problems, please reach out to either:
 
 - [Thomas O'Neil](mailto:thomas.oneil@sydney.edu.au)
 - [Givanna Putri](mailto:putri.g@wehi.edu.au)
-
-## Packages
-
-Please install the packages that we will be using in the workshop by running
-the code block below.
-
-```{r, eval=FALSE}
-
-cran_packages <- c(
-  "BiocManager", "Seurat", "ggplot2", "scales", "patchwork", "qs2",
-  "viridis", "pak", "here", "hdf5r", "Rfast2"
-)
-
-install.packages(cran_packages)
-
-# RCTD only available on Github
-pak::pkg_install("dmcable/spacexr")
-
-bioc_packages <- c()
-if(length(bioc_packages) > 0) {BiocManager::install(bioc_packages)}
-
-```
-
-Running this chunk will let you know if the packages have been installed properly. 
-
-```{r eval=FALSE}
-checkSetup <- function() {
-  library(cli)
-  cat("\n--------------------------------------\n")
-  cat(style_bold(col_magenta("\n***Installing General Packages***\n\n")))
-  not <- c(); not2 <- c()
-  packages1 <- c(cran_packages, bioc_packages)#, "Test")
-  for (i in 1:length(packages1)){
-    if(requireNamespace(packages1[i], quietly = TRUE)==F) {
-      cat(paste(style_bold(col_red(packages1[i])), "has not been installed\n"))
-      not <- c(not,i)
-    } else {
-      suppressWarnings(suppressMessages(library(as.character(packages1[i]), character.only = TRUE)))
-      cat(col_yellow(packages1[i]), "is loaded!\n")
-    }
-  }
-  cat("\n--------------------------------------\n")
-  if (length(not) > 0){
-    cat(style_bold(bg_red("\n  **IMPORTANT**  ")),
-        style_bold(col_yellow("\n\nYou need to install: \n")),
-        paste(paste(c(packages1[not]), collapse=", ")),
-        "\n\n--------------------------------------",
-        "\n\n Use:\n - install.packages(),\n - BiocManager::install() or, \n - use Google to find installation instructions.\n\n", style_bold(col_green("Then run this function again!\n\n")))
-  } else {
-    cat("",col_green(style_bold("\n All packages are loaded!\n\n Happy Coding! :)\n\n")))
-  }
-}
-checkSetup()
-```
-
-
-## Folder structure
-
-The code block below will create a bunch of folders in the location where
-this script is stored.
-
-```{r, eval=FALSE}
-# This sets the working directory for all subsequent code chunks to be run
-# to the location of this file.
-
-raw_data_dir <- file.path(here::here(), "data", "visium", "raw")
-data_dir <- file.path(here::here(), "data", "visium", "data")
-
-if(!dir.exists(raw_data_dir)){dir.create(raw_data_dir, recursive = TRUE)}
-if(!dir.exists(data_dir)){dir.create(data_dir, recursive = TRUE)}
-```
-
-## Data Download{.tabset}
-
-Please source the code block below to load a function to check the integrity of the downloaded files.
-
-```{r eval=FALSE}
-check_md5 <- function(files_expected_md5sum) {
-    # files_expected_md5sum must be a named vector where the name is the path to the file
-    # and the value is the expected md5sum
-    library(cli)
-    library(tools)
-    
-    error <- combine_ansi_styles("red", "bold")
-    
-    need_redownload <- FALSE
-    for (filename in names(files_expected_md5sum)) {
-        actual_md5sum <- md5sum(filename)
-        expected_md5sum <- files_expected_md5sum[filename]
-        if (actual_md5sum != expected_md5sum) {
-            cat(error(paste(
-                filename, "is corrupted. Actual md5sum:", actual_md5sum, "!= Expected md5sum:", expected_md5sum, "\n"
-                )
-            ))
-            
-            need_redownload <- TRUE
-        }
-    }
-    if (need_redownload) {
-        cat(error("Some files are corrupted. Please redownload"))
-    }
-}
-```
-
-***Note***: if you encounter a timeout error (after 60 seconds) while downloading the files,
-you can increase the timeout to say 6,000 seconds to give R more time
-to download the files by running `options(timeout = max(6000, getOption("timeout")))`
-
-### Visium
-
-The code block below will download the count matrix and spatial information
-required to load the Visium data in.
-
-```{r eval=FALSE}
-download.file("https://cf.10xgenomics.com/samples/spatial-exp/3.0.0/Visium_V2_Human_Colon_Cancer_P2/Visium_V2_Human_Colon_Cancer_P2_filtered_feature_bc_matrix.h5", 
-              destfile = file.path(raw_data_dir, "Visium_V2_Human_Colon_Cancer_P2_filtered_feature_bc_matrix.h5"), 
-              method = "curl")
-
-
-download.file("https://cf.10xgenomics.com/samples/spatial-exp/3.0.0/Visium_V2_Human_Colon_Cancer_P2/Visium_V2_Human_Colon_Cancer_P2_spatial.tar.gz", 
-              destfile = file.path(raw_data_dir, "spatial.tar.gz"), 
-              method = "curl")
-```
-
-The code below will check the integrity of the downloaded files.
-If you get any red warning, please re-download the files that were found to be corrupted using the code block above.
-
-```{r eval=FALSE}
-
-# check md5sum of the downloaded files.
-md5sum_str <- c(
-    "0a9733cf0dfd3dfaa3b6c1c5c24bcbed",
-    "a32edc825ab7089fca7848fc80cd5113"
-)
-names(md5sum_str) <- c(
-    file.path(raw_data_dir, "Visium_V2_Human_Colon_Cancer_P2_filtered_feature_bc_matrix.h5"),
-    file.path(raw_data_dir, "spatial.tar.gz")
-)
-check_md5(md5sum_str)
-
-```
-
-If there are no warning from the code block above, proceed to untar the `spatial.tar.gz` file 
-using the code block below.
-
-```{r eval=FALSE}
-untar(file.path(raw_data_dir, "spatial.tar.gz"), exdir = raw_data_dir)
-```
-
-
-#### SC reference data
-
-TODO. Need to upload the qs2 file somewhere they can download.
-
-#### Optional loupe browser file
-
-The following file is optional and is only required if you would like to try out
-the demo we will be showing on how to use loupe browser to make some QC step simpler.
-
-```{r eval=FALSE}
-download.file(
-    "https://cf.10xgenomics.com/samples/spatial-exp/3.0.0/Visium_V2_Human_Colon_Cancer_P2/Visium_V2_Human_Colon_Cancer_P2_cloupe.cloupe",
-    destfile = file.path(raw_data_dir, "Visium_V2_Human_Colon_Cancer_P2_cloupe.cloupe"),
-    method = "curl"
-)
-md5sum_str <- c("c5726e203c21a2fc3432831ea7c74252")
-names(md5sum_str) <- c(
-    file.path(raw_data_dir, "Visium_V2_Human_Colon_Cancer_P2_cloupe.cloupe")
-)
-check_md5(md5sum_str)
-```
-
-Install Loupe Browser at this link:
-https://www.10xgenomics.com/support/software/loupe-browser/latest
 
 ## Session Info
 
