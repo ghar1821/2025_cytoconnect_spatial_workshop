@@ -391,7 +391,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-11-19
+<strong>Last updated:</strong> 2025-11-25
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -523,15 +523,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomghar18212025cytoconnectspatialworkshoptreecf4dc7cd43be2dd08fcda3449f20c98274e4fb76targetblankcf4dc7ca">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomghar18212025cytoconnectspatialworkshoptree171f5c4c0f161f33ff15ba26d06ff18c1f3c1354targetblank171f5c4a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/tree/cf4dc7cd43be2dd08fcda3449f20c98274e4fb76" target="_blank">cf4dc7c</a>
+<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/tree/171f5c4c0f161f33ff15ba26d06ff18c1f3c1354" target="_blank">171f5c4</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomghar18212025cytoconnectspatialworkshoptreecf4dc7cd43be2dd08fcda3449f20c98274e4fb76targetblankcf4dc7ca"
+id="strongRepositoryversionstrongahrefhttpsgithubcomghar18212025cytoconnectspatialworkshoptree171f5c4c0f161f33ff15ba26d06ff18c1f3c1354targetblank171f5c4a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -541,7 +541,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/tree/cf4dc7cd43be2dd08fcda3449f20c98274e4fb76" target="_blank">cf4dc7c</a>.
+<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/tree/171f5c4c0f161f33ff15ba26d06ff18c1f3c1354" target="_blank">171f5c4</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -604,6 +604,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/blob/171f5c4c0f161f33ff15ba26d06ff18c1f3c1354/analysis/visium_01.Rmd" target="_blank">171f5c4</a>
+</td>
+<td>
+Givanna Putri
+</td>
+<td>
+2025-11-25
+</td>
+<td>
+wflow_publish("analysis/visium_01.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/ghar1821/2025_cytoconnect_spatial_workshop/fcba5571a53451709f861f3993757347a7f756f5/docs/visium_01.html" target="_blank">fcba557</a>
+</td>
+<td>
+Givanna Putri
+</td>
+<td>
+2025-11-19
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -713,9 +747,11 @@ library(qs2)</code></pre>
 colorectal cancer. It is described in a bioRxiv paper: <a
 href="https://doi.org/10.1101/2024.06.04.597233"
 class="uri">https://doi.org/10.1101/2024.06.04.597233</a></p>
-<p>The data can be downloaded from <a
-href="https://www.10xgenomics.com/products/visium-hd-spatial-gene-expression/dataset-human-crc">here</a>.
-Choose Visium CytAssist v2 Sample P2 CRC on the tab on the left.</p>
+<p>The data can be downloaded from Google drive link in setup page or
+from <a
+href="https://www.10xgenomics.com/products/visium-hd-spatial-gene-expression/dataset-human-crc">10x
+website</a>. If you choose to do the latter, make sure you choose Visium
+CytAssist v2 Sample P2 CRC on the tab on the left.</p>
 </div>
 <div id="obtaining-the-spot-x-gene-matrix" class="section level2">
 <h2>Obtaining the spot x gene matrix</h2>
@@ -852,30 +888,9 @@ object. However, before doing so, you most likely have the change the
 store the H5 file and the spatial folder. In this example, they are
 stored in a “data” folder of our current working directory.</p>
 <pre class="r"><code>dat &lt;- Load10X_Spatial(
-  data.dir = file.path(here::here(), &quot;data&quot;, &quot;visium&quot;, &quot;data&quot;),
+  data.dir = file.path(here::here(), &quot;data&quot;, &quot;visium&quot;),
   filename = &#39;Visium_V2_Human_Colon_Cancer_P2_filtered_feature_bc_matrix.h5&#39;
-)
-
-## If the data are provided in folders like &#39;filtered_feature_bc_matrix&#39; and &#39;spatial&#39;, you can use Seurat::Read10X
-# Specify location where the &#39;filtered_feature_bc_matrix&#39; and &#39;spatial&#39; folders are
-
-# Read in matrix data
-# dat &lt;- Seurat::Read10X(&quot;filtered_feature_bc_matrix&quot;)
-# dat &lt;- Seurat::CreateSeuratObject(counts = dat,
-#                                   assay = &quot;Spatial&quot;,
-#                                   project = &quot;dataset&quot;)
-
-# Read in image data
-#https://github.com/satijalab/seurat/issues/5806
-# dat.img &lt;- Seurat::Read10X_Image(&quot;spatial&quot;)
-
-# Correct the image data to match the Seurat object
-# dat.img &lt;- dat.img[Seurat::Cells(dat)]
-# Seurat::DefaultAssay(dat.img) &lt;- Seurat::DefaultAssay(dat)
-
-# Add the image to the object
-# dat[[&quot;slice&quot;]] &lt;- dat.img
-# rm(dat.img)</code></pre>
+)</code></pre>
 </div>
 <div id="inspecting-seurat-object" class="section level2">
 <h2>Inspecting Seurat object</h2>
