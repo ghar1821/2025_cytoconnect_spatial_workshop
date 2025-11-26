@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Givanna Putri" />
+
+<meta name="date" content="2025-11-25" />
+
+<title>IMC Cell Segmentation using QuPath, ImageJ, and Mesmer</title>
+
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">2025_cytoconnect_spatial_workshop</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="setup.html">Setup</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop">
+    <span class="fab fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">IMC Cell Segmentation using QuPath, ImageJ,
+and Mesmer</h1>
+<h4 class="author">Givanna Putri</h4>
+<h4 class="date">2025-11-25</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2025-11-26
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong>
+<code>2025_cytoconnect_spatial_workshop/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.2). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20251002code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20251002)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20251002code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20251002)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomghar18212025cytoconnectspatialworkshoptreea88eee180c280d97a2c026ff15ea1f48e5cc4ae9targetblanka88eee1a">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/tree/a88eee180c280d97a2c026ff15ea1f48e5cc4ae9" target="_blank">a88eee1</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomghar18212025cytoconnectspatialworkshoptreea88eee180c280d97a2c026ff15ea1f48e5cc4ae9targetblanka88eee1a"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/tree/a88eee180c280d97a2c026ff15ea1f48e5cc4ae9" target="_blank">a88eee1</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .DS_Store
+    Ignored:    data/.DS_Store
+    Ignored:    data/imc/
+    Ignored:    data/visium/
+
+Unstaged changes:
+    Modified:   analysis/imc_02.Rmd
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/imc_01.Rmd</code>) and HTML
+(<code>docs/imc_01.html</code>) files. If you’ve configured a remote Git
+repository (see <code>?wflow_git_remote</code>), click on the hyperlinks
+in the table below to view the files as they were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/blob/a88eee180c280d97a2c026ff15ea1f48e5cc4ae9/analysis/imc_01.Rmd" target="_blank">a88eee1</a>
+</td>
+<td>
+Givanna Putri
+</td>
+<td>
+2025-11-26
+</td>
+<td>
+wflow_publish("analysis/imc_01.Rmd")
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>In this part of IMC analysis, we will focus on cell segmentation
+using popular tools QuPath and ImageJ with the Mesmer plugin. Accurate
+cell segmentation is crucial for downstream analysis, as it allows us to
+quantify marker expressions at the single-cell level.</p>
+<p>To be able to follow this tutorial, please ensure you have the
+following software installed:</p>
+<ul>
+<li>Qupath 0.6.0: <a
+href="https://qupath.readthedocs.io/en/stable/index.html"
+class="uri">https://qupath.readthedocs.io/en/stable/index.html</a></li>
+<li>ImageJ: <a href="https://imagej.net/ij/"
+class="uri">https://imagej.net/ij/</a></li>
+<li>DeepCell ImageJ plugin: <a
+href="https://github.com/vanvalenlab/kiosk-imageJ-plugin"
+class="uri">https://github.com/vanvalenlab/kiosk-imageJ-plugin</a></li>
+</ul>
+<p>For this tutorial, we will be using the 35-marker IMC panel on FFPE
+human intestines. The paper describing the data:
+<code>https://doi.org/10.1002/cyto.a.24847</code>. The panel is designed
+to delineate various immune cell subsets and HIV RNA.</p>
+<p>The data can be downloaded either from the Google drive link in the
+setup page or from <a
+href="https://zenodo.org/records/10903826?token=eyJhbGciOiJIUzUxMiJ9.eyJpZCI6ImM5NTg0MjRkLTg0YjItNDYxMy1iMWY1LWQ3OTZjNjY4YTFhOCIsImRhdGEiOnt9LCJyYW5kb20iOiJmYTNkNDkyOWFkZGNkMjAwYWRkNGFiYzQzMjM5ZDE1ZCJ9.o_iqj5f3pjQCn7Z0-OKyYSB-DSGMWcI4EF1zzI-lISplpn9-mJzRr9Rz3x2MaFrTvadNn7K7PATLewxaphZ6RA">Zenodo</a>.</p>
+</div>
+<div id="preparing-tif-files-for-segmentation" class="section level2">
+<h2>Preparing Tif files for segmentation</h2>
+<p>The dataset is provided as single channel tiff files for each marker.
+Hence when you download the data, you will get a folder structure like
+this:</p>
+<pre><code>imc
+└──tif_files
+   └── originalimages
+        ├── aSMA.tif
+        ├── Axl.tif
+        ├── CCR6.tif
+        └── ...</code></pre>
+<p>As previously mentioned in the introduction, we generally use
+membrane/cytoplasm and nuclei markers for segmentation. For this
+dataset, we will use 3 membrane markers: CD45, E-cadherin, and
+NaKATPase. For nuclei, we will use DNA1.</p>
+<div id="merging-membrane-markers-using-imagej" class="section level3">
+<h3>Merging membrane markers using ImageJ</h3>
+<p>We will first prepare the merged membrane marker using ImageJ.</p>
+<p>First, open <code>CD45.tif</code>, <code>Ecadherin.tif</code>,
+<code>NaKATPase.tif</code> in ImageJ. One window per image.</p>
+<p>Go to Process → Image Calculator to add the channels in order.</p>
+<p><img src="assets/imc_segmentation_images/image1.png" style="display: block; margin: auto;" /></p>
+<p>Select image 1 as the CD45 and Ecadherin as image 2. You will then
+get a new window called Result of CD45 as a result.</p>
+<p><img src="assets/imc_segmentation_images/image2.png" style="display: block; margin: auto;" /></p>
+<p>Save it as <code>CD45_Ecadherin.tif</code> somewhere in your
+computer.</p>
+<p><img src="assets/imc_segmentation_images/image3.png" style="display: block; margin: auto;" /></p>
+<p>Repeat the process but select <code>CD45_Ecadherin.tif</code>as image
+1 and NAKatPase as image 2.</p>
+<p><img src="assets/imc_segmentation_images/image4.png" style="display: block; margin: auto;" /></p>
+<p>You will get a new window called <code>Result of CD45_Ecad.tif</code>
+window.</p>
+<p><img src="assets/imc_segmentation_images/image5.png" style="display: block; margin: auto;" /></p>
+<p>Add a small amount of gaussian filter to blur them out so they don’t
+look like 3 separate channels. Go to Process → Filters → Gaussian Blur
+with small sigma (1–2 px).</p>
+<p><img src="assets/imc_segmentation_images/image6.png" style="display: block; margin: auto;" /></p>
+<p>You can tick the “Preview” checkbox to see what the resulting image
+will look like after applying certain sigma values. The lower the sigma
+value, the less blurring there will be.</p>
+<p><img src="assets/imc_segmentation_images/image7.png" style="display: block; margin: auto;" /></p>
+<p>Then save the image as <code>membrane_channel_combined.tif</code></p>
+</div>
+<div id="creating-stack-tiff-files" class="section level3">
+<h3>Creating stack tiff files</h3>
+<p>Before sending the tif file to mesmer for segmentation, we need to
+first create a stack tif file containing the DNA1 tif file and the
+merged membrane channel tif file we created in the previous section.</p>
+<p>First open the DNA1 image and the merged membrane channel tif file
+<em>in that order</em>. The order is important because Mesmer require
+the nuclei stain to be the very 1st layer, followed by the membrane
+layer. Opening the DNA1 first will allow us to specify the DNA channel
+as as the very 1st layer, followed by the membrane channel.</p>
+<p><img src="assets/imc_segmentation_images/image8.png" style="display: block; margin: auto;" /></p>
+<p>Next, go to Image → stacks → Image to Stack.</p>
+<p><img src="assets/imc_segmentation_images/image9.png" style="display: block; margin: auto;" /></p>
+<p>You should get a stacked image. Make sure stack 1 of 2 is DNA1 and
+stack 2 is the membrane channel. You can flick through the stack using
+the left and right arrow key. If the stacks are ordered correctly, you
+should see 1/2 next to the DNA1 and 2/2 next to
+<code>membrane_channel_combined</code>.</p>
+<p><img src="assets/imc_segmentation_images/image10.png" style="display: block; margin: auto;" /><img src="assets/imc_segmentation_images/image11.png" style="display: block; margin: auto;" /></p>
+<p>Save the image, use any file name.</p>
+</div>
+</div>
+<div id="segmentation-using-mesmer" class="section level2">
+<h2>Segmentation using Mesmer</h2>
+<p>Now we are ready to send our file to DeepCell server to be
+segmented.</p>
+<p>With the stack image open, select the image, then go to Plugin →
+DeepCell Kiosk → Submit Active Image.</p>
+<p><img src="assets/imc_segmentation_images/image12.png" style="display: block; margin: auto;" /></p>
+<p>You can leave the config as it is and just click ok.</p>
+<p><img src="assets/imc_segmentation_images/image13.png" style="display: block; margin: auto;" /><img src="assets/imc_segmentation_images/image14.png" style="display: block; margin: auto;" /></p>
+<p>On the menu bar you should see a progress bar showing the status.</p>
+<p><img src="assets/imc_segmentation_images/image15.png" style="display: block; margin: auto;" /></p>
+<p>When it is done you should get the segmentation mask.</p>
+<p><img src="assets/imc_segmentation_images/image16.png" style="display: block; margin: auto;" /></p>
+<p>Before we can import the segmentation to Qupath for closer
+inspection, we have to first generate the label overlay. Go to Plugin →
+DeepCell Kiosk → Create label overlay.</p>
+<p><img src="assets/imc_segmentation_images/image17.png" style="display: block; margin: auto;" /></p>
+<p>Once it is done you will get the cell outlines like so.</p>
+<p><img src="assets/imc_segmentation_images/image18.png" style="display: block; margin: auto;" /></p>
+<p>You can then export it by going to Image → Overlay → To ROI
+manager.</p>
+<p><img src="assets/imc_segmentation_images/image19.png" style="display: block; margin: auto;" /></p>
+<p>Select more at bottom right of the window then save.</p>
+<p><img src="assets/imc_segmentation_images/image20.png" style="display: block; margin: auto;" /></p>
+<p>It should export the ROI as a zip file.</p>
+</div>
+<div id="visualising-tissue-using-qupath" class="section level2">
+<h2>Visualising tissue using QuPath</h2>
+<p>Before we can view all the channels in QuPath, we need to first
+convert all the single channel tif files (1 channel = 1 tif file) into
+<strong>one</strong> stack image and save it.</p>
+<div id="creating-stack-tif-file" class="section level3">
+<h3>Creating stack tif file</h3>
+<p>We can do this using ImageJ.</p>
+<p>Go to File → Import → Image Sequence. Click browser to select the
+folder containing all the tif files and click ok.</p>
+<p><img src="assets/imc_segmentation_images/image21.png" style="display: block; margin: auto;" /></p>
+<p>When done, you should have an image with 37 channels. You can switch
+between different channels using the left and right arrow keys. You can
+also zoom in and out of the image using the up and down arrow keys
+respectively.</p>
+<p><img src="assets/imc_segmentation_images/image22.png" style="display: block; margin: auto;" /><img src="assets/imc_segmentation_images/image23.png" style="display: block; margin: auto;" /></p>
+<p>We have to then convert it to hyperstack. Go to Image → Hyperstacks →
+Stack to Hyperstack.</p>
+<p>Set the channels to how many markers you have (37 in this dataset)
+and slice to 1. Leave the order as it is as that’s how qupath likes
+it.</p>
+<p><img src="assets/imc_segmentation_images/image24.png" style="display: block; margin: auto;" /></p>
+<p>Then save as tiff file.</p>
+</div>
+<div id="interacting-with-the-tif-file-using-qupath"
+class="section level3">
+<h3>Interacting with the tif file using QuPath</h3>
+<p>Create a qupath project by clicking on the
+<code>create project...</code> button on the right.</p>
+<p><img src="assets/imc_segmentation_images/image25.png" style="display: block; margin: auto;" /></p>
+<p>Pick where you want to store the files associated with the
+project.</p>
+<p><img src="assets/imc_segmentation_images/image26.png" style="display: block; margin: auto;" /></p>
+<p>You will then be asked to add images to the QuPath project. Click
+<code>Choose files</code> and select the directory where you store the
+tif stack tif file we created in the previous section. Then click
+import.</p>
+<p><img src="assets/imc_segmentation_images/image27.png" style="display: block; margin: auto;" /></p>
+<p>Qupath will ask you what type of image this is. Its guesses are
+generally pretty accurate.</p>
+<p><img src="assets/imc_segmentation_images/image28.png" style="display: block; margin: auto;" /></p>
+<p>By default, it will show all the channels and there will be overlaps
+in colours.</p>
+<p>To pick which channel to show, go to View → Brightness/Contrast.
+Untick all channels, then tick whichever you want to show. In example
+below, I picked DNA1 (red) and CD45 (turquoise).</p>
+<p><img src="assets/imc_segmentation_images/image29.png" style="display: block; margin: auto;" /></p>
+<p>When you view a stack image (DNA1 and CD45 in the example above),
+each channel is shown with its own intensity range. The range is usually
+from the minimum pixel value to the maximum pixel value.</p>
+<p>If a channel has very bright signal (like DNA1 in our example above),
+it can visually dominate the display. We can reduce its apparent
+brightness by changing how QuPath maps pixel intensities to display
+brightness.</p>
+<p>You can either move the max slider to the right, which tells qupath
+any value larger than this threshold will be “whiter”. Or move the min
+slider to the right, which tells qupath to exaggerate the contrast.</p>
+<p><img src="assets/imc_segmentation_images/image30.png" style="display: block; margin: auto;" /></p>
+<blockquote>
+<p>This doesn’t change your data — it just changes how it’s
+visualized.</p>
+</blockquote>
+<p>You can zoom in and out of the image by scrolling on the image up or
+down. The scale of the zoom is showed on the bottom left of the
+image.</p>
+<p>Zoom out:</p>
+<p><img src="assets/imc_segmentation_images/image31.png" style="display: block; margin: auto;" /></p>
+<p>Zoom in:</p>
+<p><img src="assets/imc_segmentation_images/image32.png" style="display: block; margin: auto;" /></p>
+</div>
+<div id="importing-segmentation-masks" class="section level3">
+<h3>Importing segmentation masks</h3>
+<p>Go to Extensions → ImageJ → Import ImageJ ROIs.</p>
+<p><img src="assets/imc_segmentation_images/image33.png" style="display: block; margin: auto;" /></p>
+<p>Select the zip file we exported from ImageJ and click ok. You should
+now get the segmentation masks overlaid over the image.</p>
+<p><img src="assets/imc_segmentation_images/image34.png" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="manually-modifying-segmentation-masks-using-qupath"
+class="section level2">
+<h2>Manually modifying segmentation masks using Qupath</h2>
+<p>We can now scrutinise this segmentation result. Toggle few channels
+and see how it looks. Zoom in and out the tissue.</p>
+<p>If you find a weird or just plain wrong segmentation, like below
+where we have cells missing DNA (red) - double clicking on a cell should
+focus on it. You can delete it by just pressing the delete key.</p>
+<p><img src="assets/imc_segmentation_images/image35.png" style="display: block; margin: auto;" /></p>
+<p>Or if you get an overzealous one like the one below, you can select
+it by double clicking and drag the nodes around to reshape it.</p>
+<p><img src="assets/imc_segmentation_images/image36.png" style="display: block; margin: auto;" /></p>
+<p>Qupath should automatically merge the nodes or create new ones as you
+drag them around.</p>
+<p><img src="assets/imc_segmentation_images/image37.png" style="display: block; margin: auto;" /></p>
+</div>
+<div id="exporting-segmentation-masks" class="section level2">
+<h2>Exporting segmentation masks</h2>
+<p>To do any downstream analyses using R, we need to export the
+segmentation masks out into a csv file that we can read in using R.</p>
+<div id="measuring-channel-intensity" class="section level3">
+<h3>Measuring channel intensity</h3>
+<p>To do this, we need to first get Qupath to measure the intensity of
+each channel.</p>
+<p>First, go to Annotations tab on the menu panel on the left and click
+select all.</p>
+<p><img src="assets/imc_segmentation_images/image38.png" style="display: block; margin: auto;" /></p>
+<p>This should select all segmentation masks, like so.</p>
+<p><img src="assets/imc_segmentation_images/image39.png" style="display: block; margin: auto;" /></p>
+<p>Go to Analyze → Calculate Features → Add intensity features.</p>
+<p><img src="assets/imc_segmentation_images/image40.png" style="display: block; margin: auto;" /></p>
+<p>Tick all the channels one after another. Scroll down and select
+mean.</p>
+<p><img src="assets/imc_segmentation_images/image41.png" style="display: block; margin: auto;" /></p>
+<p>This tells Qupath to export out the mean intensity for each mask.
+There are other options, median, SD, min &amp; max. If you want you can
+select more than one options. Then hit run.</p>
+<p>It will then ask you to what to process, select “Selected objects”
+then click ok.</p>
+<p><img src="assets/imc_segmentation_images/image42.png" style="display: block; margin: auto;" /></p>
+<p>When it finishes, the panel at bottom left should be populated with
+intensity measurements for all channels.</p>
+<p><img src="assets/imc_segmentation_images/image43.png" style="display: block; margin: auto;" /></p>
+</div>
+<div id="annotating-masks" class="section level3">
+<h3>Annotating masks</h3>
+<p>When exporting masks, QuPath needs to know what masks to export. To
+tell it this, we need to assign an annotation to the masks.</p>
+<p>Go to Annotations tab on the left panel, click “Select all” button on
+the Annotation list panel (like before). It shall highlight all the
+masks. Then pick “Other” on the class list panel and click “Set select…”
+button in the panel.</p>
+<p><img src="assets/imc_segmentation_images/image44.png" style="display: block; margin: auto;" /></p>
+<p>You should then see in the bottom left panel the classification row
+will say “other”.</p>
+<p><img src="assets/imc_segmentation_images/image45.png" style="display: block; margin: auto;" /></p>
+<p>You can also of course, annotate your cells by flicking through
+various channels, selecting individual masks and annotate them. <em>BUT!
+This is best done using more traditional high dimensional
+approach</em>.</p>
+<p>However if you prefer to do it using Qupath..</p>
+<p>On the class list panel, click on the + button to create a new label.
+Say CD4 T cell.</p>
+<p><img src="assets/imc_segmentation_images/image46.png" style="display: block; margin: auto;" /></p>
+<p>Select a mask that you think represents CD4 T cell. Then select the
+CD4 T cell class in the class list, then click set selected.</p>
+<p><img src="assets/imc_segmentation_images/image47.png" style="display: block; margin: auto;" /></p>
+<p>Then panel on the bottom left, should show CD4 T cell in the
+classification row.
+<img src="assets/imc_segmentation_images/image48.png" style="display: block; margin: auto;" /></p>
+<p>We can repeat for different class, say CD8 T cell.</p>
+<p><img src="assets/imc_segmentation_images/image49.png" style="display: block; margin: auto;" /></p>
+</div>
+<div id="export-the-masks" class="section level3">
+<h3>Export the masks</h3>
+<p>Now we can finally export the masks.</p>
+<p>Click “Select all” in the annotation list panel on the left, just
+like before. Go to Measure → Export measurements.</p>
+<p><img src="assets/imc_segmentation_images/image50.png" style="display: block; margin: auto;" /></p>
+<p>Select the tif file on the available panel on the left and click
+&gt;&gt; to transfer it to the right panel. Set the output file to
+whatever the filename you want to export it to.</p>
+<p><img src="assets/imc_segmentation_images/image51.png" style="display: block; margin: auto;" /></p>
+<p>Select “Annotations” as “Export type”, and csv as “Separator”. Click
+the populate button.</p>
+<p><img src="assets/imc_segmentation_images/image52.png" style="display: block; margin: auto;" /></p>
+<p>Tick everything you want to export.</p>
+<p><img src="assets/imc_segmentation_images/image53.png" style="display: block; margin: auto;" /></p>
+<p>Then click export and save it to
+<code>data/imc/measurements.csv</code> folder you created in the setup
+step.</p>
+<p>You should now have a csv file like this that you can now export to
+R.</p>
+<p><img src="assets/imc_segmentation_images/image54.png" style="display: block; margin: auto;" /></p>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.5.1 (2025-06-13)
+Platform: aarch64-apple-darwin20
+Running under: macOS Sequoia 15.5
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: Australia/Melbourne
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] workflowr_1.7.2
+
+loaded via a namespace (and not attached):
+ [1] vctrs_0.6.5       httr_1.4.7        cli_3.6.5         knitr_1.50       
+ [5] rlang_1.1.6       xfun_0.53         stringi_1.8.7     processx_3.8.6   
+ [9] promises_1.3.3    jsonlite_2.0.0    glue_1.8.0        rprojroot_2.1.1  
+[13] git2r_0.36.2      htmltools_0.5.8.1 httpuv_1.6.16     ps_1.9.1         
+[17] sass_0.4.10       rmarkdown_2.29    jquerylib_0.1.4   tibble_3.3.0     
+[21] evaluate_1.0.5    fastmap_1.2.0     yaml_2.3.10       lifecycle_1.0.4  
+[25] whisker_0.4.1     stringr_1.5.2     compiler_4.5.1    fs_1.6.6         
+[29] pkgconfig_2.0.3   Rcpp_1.1.0        rstudioapi_0.17.1 later_1.4.4      
+[33] digest_0.6.37     R6_2.6.1          pillar_1.11.0     callr_3.7.6      
+[37] magrittr_2.0.4    bslib_0.9.0       tools_4.5.1       cachem_1.1.0     
+[41] getPass_0.2-4    </code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
