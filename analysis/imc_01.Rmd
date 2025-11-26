@@ -1,0 +1,489 @@
+---
+title: "IMC Cell Segmentation using QuPath, ImageJ, and Mesmer"
+author: "Givanna Putri"
+date: "2025-11-25"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+In this part of IMC analysis, we will focus on cell segmentation using popular tools QuPath and ImageJ with the Mesmer plugin. 
+Accurate cell segmentation is crucial for downstream analysis, as it allows us to quantify marker expressions at the single-cell level.
+
+To be able to follow this tutorial, please ensure you have the following software installed:
+
+- Qupath 0.6.0: https://qupath.readthedocs.io/en/stable/index.html
+- ImageJ: https://imagej.net/ij/
+- DeepCell ImageJ plugin: https://github.com/vanvalenlab/kiosk-imageJ-plugin
+
+For this tutorial, we will be using the 35-marker IMC panel on FFPE human intestines.
+The paper describing the data: `https://doi.org/10.1002/cyto.a.24847`.
+The panel is designed to delineate various immune cell subsets and HIV RNA.
+
+The data can be downloaded either from the Google drive link in the setup page or 
+from [Zenodo](https://zenodo.org/records/10903826?token=eyJhbGciOiJIUzUxMiJ9.eyJpZCI6ImM5NTg0MjRkLTg0YjItNDYxMy1iMWY1LWQ3OTZjNjY4YTFhOCIsImRhdGEiOnt9LCJyYW5kb20iOiJmYTNkNDkyOWFkZGNkMjAwYWRkNGFiYzQzMjM5ZDE1ZCJ9.o_iqj5f3pjQCn7Z0-OKyYSB-DSGMWcI4EF1zzI-lISplpn9-mJzRr9Rz3x2MaFrTvadNn7K7PATLewxaphZ6RA).
+
+## Preparing Tif files for segmentation
+
+The dataset is provided as single channel tiff files for each marker.
+Hence when you download the data, you will get a folder structure like this:
+```
+imc
+└──tif_files
+   └── originalimages
+        ├── aSMA.tif
+        ├── Axl.tif
+        ├── CCR6.tif
+        └── ...
+```
+
+As previously mentioned in the introduction, we generally use membrane/cytoplasm and nuclei markers for segmentation.
+For this dataset, we will use 3 membrane markers: CD45, E-cadherin, and NaKATPase.
+For nuclei, we will use DNA1.
+
+### Merging membrane markers using ImageJ
+
+We will first prepare the merged membrane marker using ImageJ.
+
+First, open `CD45.tif`, `Ecadherin.tif`, `NaKATPase.tif` in ImageJ. 
+One window per image.
+
+Go to Process → Image Calculator to add the channels in order.
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_segmentation_images/image1.png", error = FALSE)
+```
+
+Select image 1 as the CD45 and Ecadherin as image 2. 
+You will then get a new window called Result of CD45 as a result.
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_segmentation_images/image2.png", error = FALSE)
+```
+
+Save it as `CD45_Ecadherin.tif` somewhere in your computer.
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_segmentation_images/image3.png", error = FALSE)
+```
+
+Repeat the process but select `CD45_Ecadherin.tif`as image 1 and NAKatPase as image 2. 
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_segmentation_images/image4.png", error = FALSE)
+```
+
+You will get a new window called `Result of CD45_Ecad.tif` window.
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_segmentation_images/image5.png", error = FALSE)
+```
+
+Add a small amount of gaussian filter to blur them out so they don’t look like 3 separate channels. 
+Go to Process → Filters → Gaussian Blur with small sigma (1–2 px).
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_segmentation_images/image6.png", error = FALSE)
+```
+
+You can tick the "Preview" checkbox to see what the resulting image will look like after applying certain sigma values.
+The lower the sigma value, the less blurring there will be. 
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_segmentation_images/image7.png", error = FALSE)
+```
+
+Then save the image as `membrane_channel_combined.tif`
+
+### Creating stack tiff files
+
+Before sending the tif file to mesmer for segmentation, we need to first create
+a stack tif file containing the DNA1 tif file and the merged membrane channel 
+tif file we created in the previous section.
+
+First open the DNA1 image and the merged membrane channel tif file *in that order*.
+The order is important because Mesmer require the nuclei stain to be 
+the very 1st layer, followed by the membrane layer.
+Opening the DNA1 first will allow us to specify the DNA channel as 
+as the very 1st layer, followed by the membrane channel.
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_segmentation_images/image8.png", error = FALSE)
+```
+
+Next, go to Image → stacks → Image to Stack.
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_segmentation_images/image9.png", error = FALSE)
+```
+
+You should get a stacked image. 
+Make sure stack 1 of 2 is DNA1 and stack 2 is the membrane channel.
+You can flick through the stack using the left and right arrow key.
+If the stacks are ordered correctly, you should see 1/2 next to the DNA1 
+and 2/2 next to `membrane_channel_combined`.
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_segmentation_images/image10.png", error = FALSE)
+
+knitr::include_graphics("assets/imc_segmentation_images/image11.png", error = FALSE)
+```
+
+Save the image, use any file name.
+
+## Segmentation using Mesmer
+
+Now we are ready to send our file to DeepCell server to be segmented. 
+
+With the stack image open, select the image, then go to Plugin → DeepCell Kiosk → Submit Active Image.
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_segmentation_images/image12.png", error = FALSE)
+```
+
+You can leave the config as it is and just click ok.
+  
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_segmentation_images/image13.png", error = FALSE)
+
+knitr::include_graphics("assets/imc_segmentation_images/image14.png", error = FALSE)
+```
+
+
+On the menu bar you should see a progress bar showing the status.
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_segmentation_images/image15.png", error = FALSE)
+```
+
+ 
+When it is done you should get the segmentation mask.
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_segmentation_images/image16.png", error = FALSE)
+```
+
+	 
+Before we can import the segmentation to Qupath for closer inspection, we have to 
+first generate the label overlay. 
+Go to Plugin → DeepCell Kiosk → Create label overlay. 
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_segmentation_images/image17.png", error = FALSE)
+```
+	 
+Once it is done you will get the cell outlines like so.
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_segmentation_images/image18.png", error = FALSE)
+```
+ 
+You can then export it by going to Image → Overlay → To ROI manager.
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_segmentation_images/image19.png", error = FALSE)
+```
+ 
+Select more at bottom right of the window then save. 
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_segmentation_images/image20.png", error = FALSE)
+```
+
+It should export the ROI as a zip file.
+
+## Visualising tissue using QuPath
+
+Before we can view all the channels in QuPath, we need to first convert all the 
+single channel tif files (1 channel = 1 tif file) into **one** stack image 
+and save it.
+
+### Creating stack tif file
+
+We can do this using ImageJ.
+
+Go to File → Import → Image Sequence. 
+Click browser to select the folder containing all the tif files and click ok.
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_segmentation_images/image21.png", error = FALSE)
+```
+
+When done, you should have an image with 37 channels. 
+You can switch between different channels using the left and right arrow keys.
+You can also zoom in and out of the image using the up and down arrow keys respectively.
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_segmentation_images/image22.png", error = FALSE)
+
+knitr::include_graphics("assets/imc_segmentation_images/image23.png", error = FALSE)
+```
+
+We have to then convert it to hyperstack. 
+Go to Image → Hyperstacks → Stack to Hyperstack. 
+
+Set the channels to how many markers you have (37 in this dataset) and slice to 1.
+Leave the order as it is as that’s how qupath likes it.
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_segmentation_images/image24.png", error = FALSE)
+```
+ 
+Then save as tiff file.
+
+### Interacting with the tif file using QuPath
+
+Create a qupath project by clicking on the `create project...` button on the right. 
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_segmentation_images/image25.png", error = FALSE)
+```
+
+Pick where you want to store the files associated with the project.
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_segmentation_images/image26.png", error = FALSE)
+```
+  
+You will then be asked to add images to the QuPath project.
+Click `Choose files` and select the directory where you store the tif stack tif file
+we created in the previous section.
+Then click import.
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_segmentation_images/image27.png", error = FALSE)
+```
+  
+Qupath will ask you what type of image this is. 
+Its guesses are generally pretty accurate.
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_segmentation_images/image28.png", error = FALSE)
+```
+ 
+By default, it will show all the channels and there will be overlaps in colours. 
+
+To pick which channel to show, go to View → Brightness/Contrast. 
+Untick all channels, then tick whichever you want to show. 
+In example below, I picked DNA1 (red) and CD45 (turquoise).
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_segmentation_images/image29.png", error = FALSE)
+```
+
+When you view a stack image (DNA1 and CD45 in the example above), 
+each channel is shown with its own intensity range. 
+The range is usually from the minimum pixel value to the maximum pixel value. 
+
+If a channel has very bright signal (like DNA1 in our example above), it can visually dominate the display. 
+We can reduce its apparent brightness by changing how QuPath maps pixel intensities to display brightness. 
+
+You can either move the max slider to the right, which tells qupath any value larger than this threshold will be “whiter”. 
+Or move the min slider to the right, which tells qupath to exaggerate the contrast.
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_segmentation_images/image30.png", error = FALSE)
+```
+
+> This doesn’t change your data — it just changes how it’s visualized.
+
+You can zoom in and out of the image by 
+scrolling on the image up or down. 
+The scale of the zoom is showed on the bottom left of the image.
+
+Zoom out:
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_segmentation_images/image31.png", error = FALSE)
+```
+
+Zoom in:
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_segmentation_images/image32.png", error = FALSE)
+```
+
+### Importing segmentation masks
+
+Go to Extensions → ImageJ → Import ImageJ ROIs.
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_segmentation_images/image33.png", error = FALSE)
+```
+ 
+Select the zip file we exported from ImageJ and click ok. 
+You should now get the segmentation masks overlaid over the image.
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_segmentation_images/image34.png", error = FALSE)
+```
+
+## Manually modifying segmentation masks using Qupath
+
+We can now scrutinise this segmentation result. 
+Toggle few channels and see how it looks. 
+Zoom in and out the tissue. 
+
+If you find a weird or just plain wrong segmentation, like below where we have cells 
+missing DNA (red) - double clicking on a cell should focus on it. 
+You can delete it by just pressing the delete key.
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_segmentation_images/image35.png", error = FALSE)
+```
+
+ 
+Or if you get an overzealous one like the one below, 
+you can select it by double clicking and drag the nodes around to reshape it. 
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_segmentation_images/image36.png", error = FALSE)
+```
+
+Qupath should automatically merge the nodes or create new ones as you drag them around.
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_segmentation_images/image37.png", error = FALSE)
+```
+
+## Exporting segmentation masks
+
+To do any downstream analyses using R, we need to export the segmentation masks out
+into a csv file that we can read in using R.
+
+### Measuring channel intensity
+
+To do this, we need to first get Qupath to measure the intensity of each channel.
+
+First, go to Annotations tab on the menu panel on the left and click select all. 
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_segmentation_images/image38.png", error = FALSE)
+```
+
+This should select all segmentation masks, like so.
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_segmentation_images/image39.png", error = FALSE)
+```
+
+Go to Analyze → Calculate Features → Add intensity features.
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_segmentation_images/image40.png", error = FALSE)
+```
+
+Tick all the channels one after another.
+Scroll down and select mean. 
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_segmentation_images/image41.png", error = FALSE)
+```
+
+This tells Qupath to export out the mean intensity for each mask. 
+There are other options, median, SD, min & max.
+If you want you can select more than one options. 
+Then hit run. 
+
+It will then ask you to what to process, select “Selected objects” then click ok.
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_segmentation_images/image42.png", error = FALSE)
+```
+
+When it finishes, the panel at bottom left should be populated with intensity measurements for all channels.
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_segmentation_images/image43.png", error = FALSE)
+```
+
+### Annotating masks
+
+When exporting masks, QuPath needs to know what masks to export.
+To tell it this, we need to assign an annotation to the masks.
+
+Go to Annotations tab on the left panel, click “Select all” button on the Annotation list panel (like before). 
+It shall highlight all the masks. 
+Then pick “Other” on the class list panel and click “Set select…” button in the panel.
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_segmentation_images/image44.png", error = FALSE)
+```
+
+You should then see in the bottom left panel the classification row will say “other”.
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_segmentation_images/image45.png", error = FALSE)
+```
+
+
+You can also of course, annotate your cells by flicking through various channels, selecting individual masks and annotate them. 
+*BUT! This is best done using more traditional high dimensional approach*.
+
+However if you prefer to do it using Qupath.. 
+
+On the class list panel, click on the + button to create a new label. 
+Say CD4 T cell.
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_segmentation_images/image46.png", error = FALSE)
+```
+
+Select a mask that you think represents CD4 T cell. 
+Then select the CD4 T cell class in the class list, then click set selected.
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_segmentation_images/image47.png", error = FALSE)
+```
+
+Then panel on the bottom left, should show CD4 T cell in the classification row.
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_segmentation_images/image48.png", error = FALSE)
+```
+
+We can repeat for different class, say CD8 T cell.
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_segmentation_images/image49.png", error = FALSE)
+```
+
+### Export the masks
+
+Now we can finally export the masks.
+
+Click “Select all” in the annotation list panel on the left, just like before.
+Go to Measure → Export measurements.
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_segmentation_images/image50.png", error = FALSE)
+```
+
+Select the tif file on the available panel on the left and click >> to transfer it to the right panel. 
+Set the output file to whatever the filename you want to export it to. 
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_segmentation_images/image51.png", error = FALSE)
+```
+
+Select “Annotations” as “Export type”, and csv as “Separator”.
+Click the populate button.
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_segmentation_images/image52.png", error = FALSE)
+```
+ 
+Tick everything you want to export.
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_segmentation_images/image53.png", error = FALSE)
+```
+
+Then click export and save it to `data/imc/measurements.csv` folder you created in the setup step.
+
+You should now have a csv file like this that you can now export to R.
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_segmentation_images/image54.png", error = FALSE)
+```
