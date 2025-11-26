@@ -31,11 +31,13 @@ theme_set(theme_classic())
 ## The dataset
 
 The data used for this tutorial is from 35-marker IMC panel on FFPE human intestines.
+The paper describing the data: `https://doi.org/10.1002/cyto.a.24847`.
 The panel is designed to delineate various immune cell subsets and HIV RNA.
 
-The data can be downloaded from [Zenodo](https://zenodo.org/records/10903826?token=eyJhbGciOiJIUzUxMiJ9.eyJpZCI6ImM5NTg0MjRkLTg0YjItNDYxMy1iMWY1LWQ3OTZjNjY4YTFhOCIsImRhdGEiOnt9LCJyYW5kb20iOiJmYTNkNDkyOWFkZGNkMjAwYWRkNGFiYzQzMjM5ZDE1ZCJ9.o_iqj5f3pjQCn7Z0-OKyYSB-DSGMWcI4EF1zzI-lISplpn9-mJzRr9Rz3x2MaFrTvadNn7K7PATLewxaphZ6RA).
+The data can be downloaded either from the Google drive link in the setup page or 
+from [Zenodo](https://zenodo.org/records/10903826?token=eyJhbGciOiJIUzUxMiJ9.eyJpZCI6ImM5NTg0MjRkLTg0YjItNDYxMy1iMWY1LWQ3OTZjNjY4YTFhOCIsImRhdGEiOnt9LCJyYW5kb20iOiJmYTNkNDkyOWFkZGNkMjAwYWRkNGFiYzQzMjM5ZDE1ZCJ9.o_iqj5f3pjQCn7Z0-OKyYSB-DSGMWcI4EF1zzI-lISplpn9-mJzRr9Rz3x2MaFrTvadNn7K7PATLewxaphZ6RA).
 
-The paper describing the data `https://doi.org/10.1002/cyto.a.24847`.
+
 
 ## Loading the data
 
@@ -228,19 +230,6 @@ We can run UMAP and visualise the data in 2D space.
 ```{r}
 set.seed(123)  # for reproducibility
 cols_to_use <- c("aSMA", "CD14", "CD11c", "CD20", "CD3", "CD31", "CD45", "Ecadherin", "FXIIIa", "Ki67", "Podoplanin")
-
-# Ask TO why PCA is needed?
-# pca_res_df <- prcomp(
-#   normed_scaled_exp %>% select(all_of(cols_to_use)) %>% as.matrix() %>% t()
-# )$rotation %>% as.data.frame()
-
-# # Visualise PCA result
-# ggplot(pca_res_df, aes(PC1,PC2)) + geom_point()
-
-# umap_res <- umap(
-#   pca_res_df %>% select(paste0("PC", seq(1, 10))) %>% as.matrix()
-# ) %>% as.data.frame() %>% 
-#   setNames(c("UMAP1", "UMAP2"))
 
 # the as.matrix converts the data frame to a matrix which umap function requires
 # as.data.frame() converts the output back to a data frame
