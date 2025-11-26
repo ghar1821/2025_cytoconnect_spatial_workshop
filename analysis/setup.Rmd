@@ -11,7 +11,16 @@ Please ensure you follow the instructions below **prior** to attending the works
 
 ## Data download
 
-Data for all the workshop exercises can be downloaded from OneDrive at this link: https://drive.google.com/drive/folders/1iEmdlpQ_CT4tK9N2vTfpg4CwxaG1djAT.
+Data for all the workshop exercises can be downloaded from 
+[Google Drive](https://drive.google.com/drive/folders/1iEmdlpQ_CT4tK9N2vTfpg4CwxaG1djAT) or
+[Dropbox](https://www.dropbox.com/scl/fo/y9f0p2rbdu55nd6wxl5k1/AProl2kY3ujsI09d3_4fxyU?rlkey=8ss0oe6xlx9t4cx5j2hzn1joq&st=yfzne8qn&dl=0).
+
+If you have any trouble downloading them, do not worry.
+We will have a hard copy of the data with us on a thumbdrive that you can copy from
+on the day of the workshop.
+Alternatively, we can also AirDrop the files on the day of the workshop.
+
+### Create folders
 
 Create a folder somewhere on your computer (e.g. 
 `C:/2025_cytoconnect_spatial_workshop/` or `/Users/yourname/2025_cytoconnect_spatial_workshop/`
