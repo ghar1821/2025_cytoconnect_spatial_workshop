@@ -41,7 +41,7 @@ Public data is not easy to get hold of.
 Cytoforum: https://cytoforum.stanford.edu/viewforum.php?f=10
 List all publications that used IMC or Cytof.
 Maintained by Mike Leiopold from Stanford. 
-Not all papers have made their data publicly available.
+Note, not all papers have made their data publicly available.
 
 ```{r echo=FALSE}
 knitr::include_graphics("assets/public_data/Picture3.png", error = FALSE)
