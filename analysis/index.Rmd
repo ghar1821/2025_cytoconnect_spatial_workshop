@@ -20,6 +20,12 @@ Cytoconnect 2025 Spatial Workshop.
 
 Please run codes in the Rmd file before coming to the workshop.
 
+## Public dataset
+
+| Rmd file                                         | Topics                        |
+|:---------                                       |:-----------------------------|
+| [public_data](public_data.html)           | Few resources to find public data|
+
 ## Spatial Transcriptomics (Visium)
 
 | Rmd file                                         | Topics                          |
