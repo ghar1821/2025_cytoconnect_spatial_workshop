@@ -1,0 +1,48 @@
+---
+title: "Searching for public data"
+author: "Givanna Putri"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+In this tutorial we will explore some resources for finding publicly available spatial transcriptomics and imaging mass cytometry datasets.
+Generally, it is much harder to find public IMC datasets compared to spatial transcriptomics datasets.
+Regardless, we will cover some useful resources for both data types.
+
+For both spatial technologies, it is important to check the "Data availability" section of relevant manuscripts.
+They often contain links to where the data is stored, typically to public repositories like GEO, Zenodo, or Figshare.
+
+## Spatial Transcriptomics Data
+
+10x has a comprehensive list of publicly available data they made available on their website.
+These data were generated in-house and encompasses a variety of tissues and technologies.
+Link to website: https://www.10xgenomics.com/datasets.
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/public_data/Picture2.png", error = FALSE)
+```
+
+You can also search [GEO](https://www.ncbi.nlm.nih.gov/geo/).
+It is a public repository used for storing genomics data.
+You will get data from different omics technologies (RNAseq, DNA, etc.).
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/public_data/Picture1.png", error = FALSE)
+```
+
+
+## IMC data
+
+Public data is not easy to get hold of.
+
+Cytoforum: https://cytoforum.stanford.edu/viewforum.php?f=10
+List all publications that used IMC or Cytof.
+Maintained by Mike Leiopold from Stanford. 
+Not all papers have made their data publicly available.
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/public_data/Picture3.png", error = FALSE)
+```
