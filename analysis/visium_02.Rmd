@@ -161,7 +161,7 @@ spots that you meant to keep, use the eraser tool to "erase" those spots from th
 After exporting the spots barcode in a csv file, we can load it up and remove them from the seurat object:
 
 ```{r warning=FALSE}
-spots_to_remove <- read.csv(file.path(here::here(), "data", "visium", "data", "spots_to_remove_v2.csv"))
+spots_to_remove <- read.csv(file.path(here::here(), "data", "visium", "spots_to_remove_v2.csv"))
 
 # add it as a metadata
 dat_fil[[]]$remove_spot_from_loupe <- Cells(dat_fil) %in% spots_to_remove$Barcode
@@ -284,7 +284,7 @@ using sequencing depth as a covariate.
 
 Note, SCT requires glmGamPoi package: `BiocManager::install('glmGamPoi')`
 
-```{r message=FALSE}
+```{r message=FALSE, warning=FALSE}
 # Might need to increase the size limit for global variables so parallel workers
 # can access it. 2GB should be sufficient.
 options(future.globals.maxSize = 2000 * 1024^2)
