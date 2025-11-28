@@ -393,6 +393,19 @@ normed_exp_filtered_scaled %>%
     )
 ```
 
+# Save the processed data
+
+```{r}
+write.csv(
+  normed_exp_filtered_scaled %>% 
+    select(Object.ID, cluster) %>%
+    mutate(cluster = paste0("Cluster_", cluster)),
+  file.path(here(), "data", "imc", "extdata", "all_channels.csv"),
+  row.names = FALSE,
+  quote=FALSE
+)
+```
+
 # Session Info
 
 ```{r}
