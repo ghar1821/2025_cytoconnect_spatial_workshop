@@ -49,4 +49,8 @@ Please run codes in the Rmd file before coming to the workshop.
 |:---------                                       |:---------------------------------------|
 | [imc_01](imc_01.html)                           | Segmentation using ImageJ and Mesmer   |   
 |                                                 | Loading and visualising data in Qupath |
+|                                                 |                                        |
 | [imc_02](imc_02.html)                           | Basic downstream analysis using R      |
+|                                                 |                                        |
+| [imc_03](imc_03.html)                           | Loading clusters back to Qupath        |
+|                                                 |                                        |
