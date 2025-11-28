@@ -81,7 +81,11 @@ You will get a new window called `Result of CD45_Ecad.tif` window.
 knitr::include_graphics("assets/imc_segmentation_images/image5.png", error = FALSE)
 ```
 
-Add a small amount of gaussian filter to blur them out so they don’t look like 3 separate channels. 
+Add a small amount of gaussian blur to reduce noise.
+Gaussian blur will diffuse the image slightly, which will cause pixels with low expression of membrane markers to appear more diffuse.
+By making these pixels less distinct, we can help prevent them from being mistakenly identified as part of a cell membrane.
+
+
 Go to Process → Filters → Gaussian Blur with small sigma (1–2 px).
 
 ```{r echo=FALSE}
@@ -468,19 +472,11 @@ knitr::include_graphics("assets/imc_segmentation_images/image51.png", error = FA
 ```
 
 Select “Annotations” as “Export type”, and csv as “Separator”.
-Click the populate button.
+Then click Export.
 
 ```{r echo=FALSE}
 knitr::include_graphics("assets/imc_segmentation_images/image52.png", error = FALSE)
 ```
- 
-Tick everything you want to export.
-
-```{r echo=FALSE}
-knitr::include_graphics("assets/imc_segmentation_images/image53.png", error = FALSE)
-```
-
-Then click export and save it to `data/imc/measurements.csv` folder you created in the setup step.
 
 You should now have a csv file like this that you can now export to R.
 
