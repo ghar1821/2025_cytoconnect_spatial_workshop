@@ -1,0 +1,83 @@
+---
+title: "Loading clusters back to Qupath"
+author: "Givanna Putri"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+We can load the cluster annotation back to Qupath and visualise them.
+
+## Loading the clusters information to Qupath
+
+First, we have to use some custom script to load the csv file to Qupath.
+Go to Automate -> Script Editor.
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_clustering_load/image1.png", error = FALSE)
+```
+
+Copy the script that is in this [Github link](https://github.com/ghar1821/2025_cytoconnect_spatial_workshop/tree/master/code/import_clustering.groovy)
+into the script editor.
+Then click run.
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_clustering_load/image2.png", error = FALSE)
+```
+
+It'll ask you to select the folder containing the csv file we exported in `imc_02`.
+Select the appropriate folder and click OK.
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_clustering_load/image3.png", error = FALSE)
+```
+
+The script will run and load the cluster information to Qupath.
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_clustering_load/image4.png", error = FALSE)
+```
+
+## Visualising the clusters
+
+To view the clusters, you need to first close the image and re-open it.
+Right click on the image, then select Multi-view -> Close viewer.
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_clustering_load/image5.png", error = FALSE)
+```
+
+Go to the Project tab on the right panel, then click on the image `all_channels.tif`
+to re-open it.
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_clustering_load/image6.png", error = FALSE)
+```
+
+The annotation list should now contain a new annotation called `Clusters`.
+Click on the triangle on the right of the class list panel and select 
+Population from existing objects -> All classes (including sub-classes).
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_clustering_load/image7.png", error = FALSE)
+```
+
+It'll ask you whether you want to keep existing class or not, feel free to pick either option.
+
+The class list should now contain the clusters we imported from R.
+This will allow you to select any given mask and assign it to a given cluster.
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_clustering_load/image9.png", error = FALSE)
+```
+
+You can choose to show masks that are assigned to a given cluster by typing the cluster name
+in the search bar and click Select all button underneath it.
+
+Pick a marker of your choice (e.g., FXIIIa) and visualise its expression across the selected clusters.
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/imc_clustering_load/image11.png", error = FALSE)
+```
