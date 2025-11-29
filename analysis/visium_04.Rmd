@@ -274,7 +274,7 @@ corresponding cell types after deconvolution.
 However, we also see some differences.
 For example, we have a region on the bottom right that shows high
 score for tumour module but the deconvolution detected no tumour at all.
-Instead, they are deconvolved into endothelial cells.
+Instead, they are deconvolved into epithelial cells.
 On the flip side, we also have a region at the bottom middle where
 deconvolution detected some T cells but module scoring showed low signals in T cells module.
 
@@ -288,7 +288,7 @@ SpatialFeaturePlot(
   ),
   pt.size.factor = 5,
   image.alpha = 0.3,
-  ncol = 1
+  ncol = 2
 )
 ```
 
